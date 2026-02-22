@@ -1,0 +1,10 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: auth-server-frontend
+    container_name: auth_server_frontend_container
+    ports:
+      - "4200:4200"
+    restart: unless-stopped

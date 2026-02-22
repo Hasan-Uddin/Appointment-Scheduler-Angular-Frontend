@@ -1,0 +1,112 @@
+<header
+    class="fixed inset-x-0 top-0 z-50 w-full border-b border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+    <nav class="flex items-center justify-between px-4 py-2.5 lg:px-6">
+        <!-- Left Side: Brand & Toggle -->
+        <div class="flex items-center gap-3">
+            <!-- 🌟 Sidebar Toggle Button (Mobile Only) -->
+            <button
+                (click)="toggleSidebar()"
+                class="rounded-lg bg-gray-100 p-2 text-gray-800 transition hover:bg-gray-200 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                aria-label="Toggle Sidebar">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2">
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+
+            <h1 class="text-xl font-bold tracking-wide text-white md:text-2xl">
+                Auth Server
+            </h1>
+        </div>
+
+        <!-- Right Side: Icons & Dropdowns -->
+        <div class="flex items-center gap-2">
+            <!-- Notifications -->
+            <button
+                type="button"
+                class="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+                aria-label="Notifications">
+                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 14 20">
+                    <path
+                        d="M12.133 10.632V8.832A5.406 5.406 0 007.979 3.57V1.1a1 1 0 10-2 0v2.47A5.406 5.406 0 001.823 8.83v1.8C1.867 13.018 0 13.614 0 14.807c0 .593 0 1.193.538 1.193h12.924c.538 0 .538-.6.538-1.193 0-1.193-1.867-1.789-1.867-4.175z" />
+                    <path d="M3.823 17a3.453 3.453 0 006.354 0H3.823z" />
+                </svg>
+            </button>
+
+            <!-- Apps Dropdown -->
+            <div class="group relative">
+                <button
+                    type="button"
+                    class="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+                    aria-label="App Shortcuts">
+                    <svg
+                        class="h-4 w-4"
+                        fill="currentColor"
+                        viewBox="0 0 18 18">
+                        <path
+                            d="M6.143 0H1.857A1.857 1.857 0 000 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 008 6.143V1.857A1.857 1.857 0 006.143 0zM16.143 0h-4.286A1.857 1.857 0 0010 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0018 6.143V1.857A1.857 1.857 0 0016.143 0zM6.143 10H1.857A1.857 1.857 0 000 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 008 16.143v-4.286A1.857 1.857 0 006.143 10zM16.143 10h-4.286A1.857 1.857 0 0010 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0018 16.143v-4.286A1.857 1.857 0 0016.143 10z" />
+                    </svg>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div
+                    class="absolute top-full right-0 z-50 mt-2 hidden w-56 rounded-md bg-white text-gray-900 shadow-lg group-hover:block dark:bg-gray-800 dark:text-white">
+                    <div
+                        class="border-b px-4 py-2 text-sm font-semibold dark:border-gray-700">
+                        Apps
+                    </div>
+                    <div class="grid grid-cols-3 gap-3 p-4">
+                        <a
+                            routerLink="admin/profile"
+                            class="group flex flex-col items-center justify-center rounded-lg p-2 text-center transition hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <svg
+                                class="mb-1 h-5 w-5 group-hover:text-black dark:text-gray-400 dark:group-hover:text-white"
+                                fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path
+                                    d="M10 0a10 10 0 1010 10A10.011 10.011 0 0010 0zm0 5a3 3 0 11-3 3 3.003 3.003 0 013-3zm0 13a8.949 8.949 0 01-4.951-1.488A3.987 3.987 0 019 13h2a3.987 3.987 0 013.951 3.512A8.949 8.949 0 0110 18z" />
+                            </svg>
+                            <span class="text-xs">Profile</span>
+                        </a>
+                        <a
+                            routerLink="setting"
+                            class="group flex flex-col items-center justify-center rounded-lg p-2 text-center transition hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <svg
+                                class="mb-1 h-5 w-5 text-gray-400 group-hover:text-black dark:group-hover:text-white"
+                                viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path d="M18 7.5h-.423l-.452-1.09c-.056-.132-.159-.247-.286-.326L15.5 5.5l-.5-1.5 1.5-.5c.132-.056.247-.159.326-.286l1.09-.452V7.5zM10 2.5a7.5 7.5 0 107.5 7.5A7.5 7.5 0 0010 2.5zm0 12a4.5 4.5 0 114.5-4.5A4.5 4.5 0 0110 14.5z" />
+                            </svg>
+                            <span class="text-xs">Settings</span>
+                        </a>
+                        <button
+                            (click)="logOut()"
+                            class="group flex flex-col items-center justify-center rounded-lg p-2 text-center transition hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <svg
+                                class="mb-1 h-5 w-5 text-red-400"
+                                aria-hidden="true"
+                                viewBox="0 0 16 16"
+                                fill="none">
+                                <path
+                                    d="M4 8h11m0 0l-4-4m4 4l-4 4m0 6V3a2 2 0 012-2h6a2 2 0 012 2v14a2 2 0 01-2 2h-6a2 2 0 01-2-2z"
+                                    stroke="currentColor"
+                                    stroke-width="2" />
+                            </svg>
+                            <span class="text-xs font-medium text-red-600"
+                                >Logout</span
+                            >
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>

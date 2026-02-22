@@ -1,0 +1,31 @@
+@import "./styles/fonts.css";
+/* External Styles */
+@import "@angular/cdk/overlay-prebuilt.css";
+@import "primeicons/primeicons.css";
+
+/* Tailwind Core and Plugins */
+@import "tailwindcss";
+@plugin "tailwindcss-primeui";
+
+/* Custom Styles */
+@import "./styles/components.css";
+@import "./styles/utils.css";
+
+@layer base {
+    :root {
+        --color-gray-150: #f7fafc;
+    }
+    html,
+    body,
+    * {
+        font-family: "Inter", sans-serif;
+        font-optical-sizing: auto;
+        font-style: normal;
+    }
+
+    .bangla,
+    [lang="bn"],
+    :lang(bn) {
+        font-family: "Hind Siliguri", sans-serif;
+    }
+}

@@ -1,0 +1,17 @@
+<div [formGroup]="form" class="w-full">
+    <p-floatLabel class="w-full" variant="on">
+        <input
+            pInputText
+            [id]="controlName"
+            [formControlName]="controlName"
+            [type]="type"
+            class="w-full" />
+        <label [for]="controlName">{{ label! }}</label>
+    </p-floatLabel>
+
+    @if (control?.touched && getErrorMsg) {
+        <p class="mt-1 text-sm text-red-500">
+            {{ getErrorMsg}}
+        </p>
+    }
+</div>

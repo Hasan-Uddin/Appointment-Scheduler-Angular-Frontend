@@ -1,0 +1,25 @@
+<p-toast key="myToast"></p-toast>
+<ngx-sonner-toaster richColors />
+<p-confirmdialog key="confirmDialog" />
+<p-confirmpopup />
+
+@switch (layoutService.layout$ | async) {
+    @case (PageLayout.Public) {
+        <router-outlet></router-outlet>
+    }
+    @case (PageLayout.Dashboard) {
+        <app-layout-dashboard>
+            <router-outlet></router-outlet>
+        </app-layout-dashboard>
+    }
+
+    @case (PageLayout.Blank) {
+        <router-outlet></router-outlet>
+    }
+
+    @default {
+        <app-layout-public>
+            <router-outlet></router-outlet>
+        </app-layout-public>
+    }
+}

@@ -1,0 +1,52 @@
+# Dependencies
+node_modules
+.pnpm-store
+package-lock.json
+yarn.lock
+
+# Build outputs
+dist
+.angular
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# CI/CD
+.github
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage
+.nyc_output
+
+# Environment files (if sensitive)
+.env
+.env.local
+.env.*.local
+
+# Misc
+*.md
+.editorconfig
+.prettierrc
+.prettierignore
+biome.json
+lefthook.yml
+

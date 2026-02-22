@@ -1,0 +1,28 @@
+<header>
+    <nav class="fixed top-0 right-0 left-0 z-50 bg-white px-4 py-2.5 shadow-sm lg:px-6">
+        <div class="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between">
+
+            <div class="flex items-center lg:order-2">
+
+                <button data-collapse-toggle="mobile-menu-2" type="button"
+                    class="ml-1 inline-flex items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:ring-2 focus:ring-gray-200 focus:outline-none lg:hidden dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                    aria-controls="mobile-menu-2" aria-expanded="false">
+                    <span class="sr-only">Open main menu</span>
+                    <i class="pi pi-align-justify" style="font-size: 1rem"></i>
+                </button>
+            </div>
+            <div class="hidden w-full items-center justify-between lg:order-1 lg:flex lg:w-auto" id="mobile-menu-2">
+                <ul class="mt-4 flex flex-col font-medium lg:mt-0 lg:flex-row lg:space-x-8">
+                    @for (item of headerData(); track $index) {
+                    <li>
+                        <a [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }"
+                            [routerLink]="[item.path]"
+                            class="block rounded py-2 pr-2 pl-3 text-gray-400 hover:text-primary-600 transition-colors duration-300"
+                            aria-current="page">{{ item.title }}</a>
+                    </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

@@ -1,0 +1,53 @@
+<div class="bg-surface-50 p-4">
+    <form [formGroup]="todoFormService.form" class="grid grid-cols-1 gap-6">
+        <div class="w-full">
+            <label
+                for="userid"
+                class="text-surface-900 w-full leading-normal font-medium"
+                >User ID</label
+            >
+            <input
+                pInputText
+                type="text"
+                placeholder="user id"
+                formControlName="userId"
+                class="w-full rounded-md px-3 py-2 shadow-sm" />
+        </div>
+        <div class="w-full">
+            <label
+                for="email2"
+                class="text-surface-900 w-full leading-normal font-medium"
+                >Title</label
+            >
+            <input
+                pInputText
+                id="email2"
+                type="text"
+                formControlName="title"
+                placeholder="title"
+                class="w-full rounded-md px-3 py-2 shadow-sm" />
+        </div>
+        <div class="w-full">
+            <label
+                for="email1"
+                class="text-surface-900 w-full leading-normal font-medium"
+                >body</label
+            >
+            <input
+                pInputText
+                id="email1"
+                type="text"
+                placeholder="body"
+                formControlName="body"
+                class="w-full rounded-md px-3 py-2 shadow-sm" />
+        </div>
+    </form>
+    <p-button
+        [label]="'Add'"
+        [loading]="isLoading()"
+        [disabled]="isLoading() || todoFormService.form.invalid"
+        class="mt-8 flex w-full items-center justify-center gap-2 rounded-md py-2"
+        (click)="submit($event)">
+        <i pButtonIcon class="pi pi-user text-base! leading-normal!"></i>
+    </p-button>
+</div>

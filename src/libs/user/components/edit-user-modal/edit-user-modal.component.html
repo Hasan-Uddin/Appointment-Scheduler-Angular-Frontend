@@ -1,0 +1,43 @@
+<div class="bg-surface-50 p-4">
+    <form
+        [formGroup]="userFormService.form"
+        class="space-y-4"
+        (ngSubmit)="submit($event)">
+        <div>
+            <common-form-input 
+                controlName="email" 
+                label="Email" 
+                type="email">
+            </common-form-input>
+        </div>
+        <div>
+            <common-form-input
+                controlName="fullName"
+                label="Full Name"
+                type="text">
+            </common-form-input>
+        </div>
+        <div>
+            <common-form-input
+                controlName="phone"
+                label="Phone Number"
+                type="tel">
+            </common-form-input>
+        </div>
+        <div>
+            <common-form-input 
+                controlName="role" 
+                label="Role" 
+                type="tel">
+            </common-form-input>
+        </div>
+        <p-button
+            [label]="'Update'"
+            [loading]="isLoading()"
+            [disabled]="isLoading() || userFormService.form.invalid"
+            type="submit"
+            class="mt-8 flex w-full items-center justify-center gap-2 rounded-md py-2">
+            <i pButtonIcon class="pi pi-user text-base! leading-normal!"></i>
+        </p-button>
+    </form>
+</div>

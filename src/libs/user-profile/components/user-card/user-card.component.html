@@ -1,0 +1,412 @@
+<div class="mx-auto w-full max-w-3xl p-4">
+    <ng-container *ngIf="!(loading$ | async); else loading">
+        <ng-container
+            *ngIf="userProfile$ | async as userProfile; else noProfile">
+            <!-- EDIT MODE -->
+            <form
+                *ngIf="editMode; else viewMode"
+                [formGroup]="form"
+                (ngSubmit)="onSave($event)"
+                class="w-full">
+                <p-card styleClass="overflow-hidden">
+                    <!-- Header -->
+                    <ng-template pTemplate="header">
+                        <div
+                            class="flex items-center justify-between gap-4 px-6 pt-6">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="flex h-12 w-12 items-center justify-center rounded-full bg-slate-900 font-semibold text-white">
+                                    {{
+                                        userProfile.fullName ||
+                                            userProfile.email ||
+                                            '?'
+                                            | slice: 0 : 1
+                                            | uppercase
+                                    }}
+                                </div>
+
+                                <div class="min-w-0">
+                                    <div
+                                        class="truncate text-lg font-semibold text-slate-900">
+                                        Edit profile
+                                    </div>
+                                    <div
+                                        class="truncate text-sm text-slate-500">
+                                        {{ form.get('email')?.value }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <button
+                                    pButton
+                                    type="button"
+                                    label="Cancel"
+                                    (click)="onCancel()"
+                                    class="p-button-secondary"></button>
+
+                                <button
+                                    pButton
+                                    type="submit"
+                                    label="Save"
+                                    [disabled]="form.invalid"></button>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                    <!-- Body -->
+                    <div class="px-6 pb-6">
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div class="space-y-2">
+                                <label
+                                    for="email"
+                                    class="block text-sm font-medium text-slate-700"
+                                    >Email</label
+                                >
+                                <input
+                                    id="email"
+                                    pInputText
+                                    formControlName="email"
+                                    type="email"
+                                    readonly
+                                    class="w-full" />
+                            </div>
+
+                            <div class="space-y-2">
+                                <label
+                                    for="role"
+                                    class="block text-sm font-medium text-slate-700"
+                                    >Role</label
+                                >
+                                <input
+                                    id="role"
+                                    pInputText
+                                    formControlName="role"
+                                    type="text"
+                                    readonly
+                                    class="w-full" />
+                            </div>
+
+                            <div class="space-y-2">
+                                <label
+                                    for="fullName"
+                                    class="block text-sm font-medium text-slate-700"
+                                    >Full name</label
+                                >
+                                <input
+                                    id="fullName"
+                                    pInputText
+                                    formControlName="fullName"
+                                    type="text"
+                                    class="w-full" />
+                            </div>
+
+                            <div class="space-y-2">
+                                <label
+                                    for="phone"
+                                    class="block text-sm font-medium text-slate-700"
+                                    >Phone</label
+                                >
+                                <input
+                                    id="phone"
+                                    pInputText
+                                    formControlName="phone"
+                                    type="text"
+                                    class="w-full" />
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <div
+                                    class="my-2 border-t border-slate-200"></div>
+                            </div>
+
+                            <!-- Country -->
+                            <div class="space-y-2">
+                                <label
+                                    for="countryId"
+                                    class="block text-sm font-medium text-slate-700"
+                                    >Country</label
+                                >
+                                <p-select
+                                    id="countryId"
+                                    formControlName="countryId"
+                                    [options]="countries"
+                                    optionLabel="name"
+                                    optionValue="id"
+                                    placeholder="Select Country"
+                                    styleClass="w-full"></p-select>
+                            </div>
+
+                            <!-- Region/Division -->
+                            <div class="space-y-2">
+                                <label
+                                    for="regionId"
+                                    class="block text-sm font-medium text-slate-700"
+                                    >Division</label
+                                >
+                                <p-select
+                                    id="regionId"
+                                    formControlName="regionId"
+                                    [options]="regions"
+                                    optionLabel="name"
+                                    optionValue="id"
+                                    placeholder="Select Division"
+                                    [disabled]="!form.get('countryId')?.value"
+                                    styleClass="w-full"></p-select>
+                            </div>
+
+                            <!-- District -->
+                            <div class="space-y-2">
+                                <label
+                                    for="districtId"
+                                    class="block text-sm font-medium text-slate-700"
+                                    >District</label
+                                >
+                                <p-select
+                                    id="districtId"
+                                    formControlName="districtId"
+                                    [options]="districts"
+                                    optionLabel="name"
+                                    optionValue="id"
+                                    placeholder="Select District"
+                                    [disabled]="!form.get('regionId')?.value"
+                                    styleClass="w-full"></p-select>
+                            </div>
+
+                            <!-- SubDistrict -->
+                            <div class="space-y-2">
+                                <label
+                                    for="subDistrictId"
+                                    class="block text-sm font-medium text-slate-700"
+                                    >Upazila</label
+                                >
+                                <p-select
+                                    id="subDistrictId"
+                                    formControlName="subDistrictId"
+                                    [options]="subDistricts"
+                                    optionLabel="name"
+                                    optionValue="id"
+                                    placeholder="Select Upazila"
+                                    [disabled]="!form.get('districtId')?.value"
+                                    styleClass="w-full"></p-select>
+                            </div>
+                        </div>
+                        <div class="space-y-2 py-3">
+                            <label
+                                for="address"
+                                class="block text-sm font-medium text-slate-700"
+                                >Address</label
+                            >
+                            <input
+                                pInputText
+                                id="address"
+                                formControlName="address"
+                                type="text"
+                                class="w-full" />
+                        </div>
+                    </div>
+                </p-card>
+            </form>
+
+            <!-- VIEW MODE -->
+            <ng-template #viewMode>
+                <p-card styleClass="overflow-hidden">
+                    <!-- Header -->
+                    <ng-template pTemplate="header">
+                        <div
+                            class="flex items-start justify-between gap-4 px-6 pt-6">
+                            <div class="flex min-w-0 items-center gap-3">
+                                <div
+                                    class="flex h-12 w-12 items-center justify-center rounded-full bg-slate-900 font-semibold text-white">
+                                    {{
+                                        userProfile.fullName ||
+                                            userProfile.email ||
+                                            '?'
+                                            | slice: 0 : 1
+                                            | uppercase
+                                    }}
+                                </div>
+
+                                <div class="min-w-0">
+                                    <div
+                                        class="truncate text-lg font-semibold text-slate-900">
+                                        {{ userProfile.fullName || '—' }}
+                                    </div>
+                                    <div
+                                        class="truncate text-sm text-slate-500">
+                                        {{ userProfile.email }}
+                                    </div>
+
+                                    <p-tag severity="info" [rounded]="true" styleClass="text-xs">
+                                        ROLE:
+                                        {{
+                                            userProfile.role || '_PUBLIC_USER_'
+                                        }}
+                                    </p-tag>
+                                </div>
+                            </div>
+
+                            <button
+                                pButton
+                                type="button"
+                                label="Edit"
+                                (click)="onEdit()"></button>
+                        </div>
+                    </ng-template>
+
+                    <!-- Body -->
+                    <div class="px-6 pb-6">
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div class="rounded-lg border border-slate-200 p-4">
+                                <div
+                                    class="text-xs font-semibold tracking-wide text-slate-500 uppercase">
+                                    Contact
+                                </div>
+
+                                <dl class="mt-3 space-y-3">
+                                    <div>
+                                        <dt class="text-sm text-slate-500">
+                                            Phone
+                                        </dt>
+                                        <dd
+                                            class="text-sm font-medium text-slate-900">
+                                            {{ userProfile.phone || '—' }}
+                                        </dd>
+                                    </div>
+
+                                    <div>
+                                        <dt class="text-sm text-slate-500">
+                                            Email
+                                        </dt>
+                                        <dd
+                                            class="text-sm font-medium break-all text-slate-900">
+                                            {{ userProfile.email || '—' }}
+                                        </dd>
+                                    </div>
+                                </dl>
+                            </div>
+
+                            <div class="rounded-lg border border-slate-200 p-4">
+                                <div
+                                    class="text-xs font-semibold tracking-wide text-slate-500 uppercase">
+                                    Location
+                                </div>
+
+                                <ng-container
+                                    *ngIf="
+                                        locationsLoaded$ | async;
+                                        else locationLoading
+                                    ">
+                                    <dl class="mt-3 space-y-3">
+                                        <div>
+                                            <dt class="text-sm text-slate-500">
+                                                Country
+                                            </dt>
+                                            <dd
+                                                class="text-sm font-medium text-slate-900">
+                                                {{
+                                                    getCountryName(
+                                                        userProfile.countryId
+                                                    ) || '—'
+                                                }}
+                                            </dd>
+                                        </div>
+
+                                        <div>
+                                            <dt class="text-sm text-slate-500">
+                                                Division
+                                            </dt>
+                                            <dd
+                                                class="text-sm font-medium text-slate-900">
+                                                {{
+                                                    getRegionName(
+                                                        userProfile.regionId
+                                                    ) || '—'
+                                                }}
+                                            </dd>
+                                        </div>
+
+                                        <div>
+                                            <dt class="text-sm text-slate-500">
+                                                District
+                                            </dt>
+                                            <dd
+                                                class="text-sm font-medium text-slate-900">
+                                                {{
+                                                    getDistrictName(
+                                                        userProfile.districtId
+                                                    ) || '—'
+                                                }}
+                                            </dd>
+                                        </div>
+
+                                        <div>
+                                            <dt class="text-sm text-slate-500">
+                                                Upazila
+                                            </dt>
+                                            <dd
+                                                class="text-sm font-medium text-slate-900">
+                                                {{
+                                                    getSubDistrictName(
+                                                        userProfile.subDistrictId
+                                                    ) || '—'
+                                                }}
+                                            </dd>
+                                        </div>
+
+                                        <div>
+                                            <dt class="text-sm text-slate-500">
+                                                Address
+                                            </dt>
+                                            <dd
+                                                class="text-sm font-medium text-slate-900">
+                                                {{
+                                                    getSubDistrictName(
+                                                        userProfile.address
+                                                    ) || '—'
+                                                }}
+                                            </dd>
+                                        </div>
+                                    </dl>
+                                </ng-container>
+
+                                <ng-template #locationLoading>
+                                    <div class="mt-3 space-y-3">
+                                        <p-skeleton
+                                            height="1rem"
+                                            styleClass="w-10/12"></p-skeleton>
+                                        <p-skeleton
+                                            height="1rem"
+                                            styleClass="w-8/12"></p-skeleton>
+                                        <p-skeleton
+                                            height="1rem"
+                                            styleClass="w-9/12"></p-skeleton>
+                                        <p-skeleton
+                                            height="1rem"
+                                            styleClass="w-7/12"></p-skeleton>
+                                    </div>
+                                </ng-template>
+                            </div>
+                        </div>
+                    </div>
+                </p-card>
+            </ng-template>
+        </ng-container>
+
+        <ng-template #noProfile>
+            <p-card>
+                <div class="py-10 text-center text-slate-600">
+                    No profile found.
+                </div>
+            </p-card>
+        </ng-template>
+    </ng-container>
+
+    <ng-template #loading>
+        <p-card>
+            <div class="py-10 text-center text-slate-600">
+                Loading profile...
+            </div>
+        </p-card>
+    </ng-template>
+</div>

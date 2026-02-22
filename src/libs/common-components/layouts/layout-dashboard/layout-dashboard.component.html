@@ -1,0 +1,15 @@
+<div class="min-h-screen bg-gray-50 text-[0.8rem] dark:bg-gray-900">
+    <app-sidebar-dashboard></app-sidebar-dashboard>
+
+    <main
+        class="h-full overflow-y-auto transition-all duration-300"
+        [ngClass]="{
+            'md:ml-56': sidebarService.isSidebarOpen(),
+            'md:ml-0': !sidebarService.isSidebarOpen(),
+        }">
+        <app-dashboard-header></app-dashboard-header>
+        <div class="flex-1 p-4 sm:p-6">
+            <ng-content></ng-content>
+        </div>
+    </main>
+</div>

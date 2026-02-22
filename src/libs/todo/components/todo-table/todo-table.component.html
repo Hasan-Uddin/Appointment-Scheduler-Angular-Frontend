@@ -1,0 +1,68 @@
+@let state = todoListStateService.selectAll() | async;
+@let loading = this.todoListStateService.select('loading') | async;
+@let twentyTodos = state?.todos;
+@if (loading) {
+    <div class="flex items-center justify-center py-8">
+        <i
+            class="pi pi-spin pi-spinner"
+            style="font-size: 2rem; color: green"></i>
+    </div>
+} @else if (state?.todos?.length) {
+    <div
+        class="ronded-md max-h-[350px] overflow-scroll border border-gray-200 p-4">
+        <p-table
+            [value]="twentyTodos ?? []"
+            [paginator]="false"
+            [tableStyle]="{ 'min-width': '30rem' }"
+            [globalFilterFields]="['title', 'body', 'id']"
+            [lazy]="true"
+            stripedRows="true">
+            <ng-template #header>
+                <tr>
+                    <th>Id</th>
+                    <th>User ID</th>
+                    <th>Title</th>
+                    <th>Body</th>
+                    <th>Actions</th>
+                </tr>
+            </ng-template>
+            <ng-template #body let-data>
+                <tr>
+                    <td>
+                        {{ data.id }}
+                    </td>
+                    <td>
+                        {{ data.userId }}
+                    </td>
+                    <td>
+                        {{ data.title.slice(0, 10) }}
+                    </td>
+                    <td>
+                        {{ data.body.slice(0, 20) }}
+                    </td>
+                    <td class="flex items-center justify-start gap-1">
+                        <p-button
+                            styleClass="mb-2"
+                            icon="pi pi-pen-to-square"
+                            size="small"
+                            rounded="true"
+                            text="true"
+                            (click)="editTodo(data)" />
+                        <p-button
+                            styleClass="mb-2"
+                            severity="warn"
+                            icon="pi pi-trash"
+                            size="small"
+                            [rounded]="true"
+                            [text]="true"
+                            (click)="confirmDelete(data)" />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+} @else {
+    <div class="flex items-center justify-center py-8">
+        <span class="text-2xl font-bold">No data found</span>
+    </div>
+}
