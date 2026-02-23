@@ -2,15 +2,15 @@ import { Route } from '@angular/router'
 import { PageLayout, setLayout } from '../../../libs/common-components'
 
 export type DashboardRoutes = {
-    user: Route
+    bookings: Route
 }
 
 export const dashboardRoutes: DashboardRoutes = {
-    user: {
+    bookings: {
         path: 'host/bookings',
         loadComponent: () =>
-            import('./page-user/page-user.component').then(
-                (m) => m.PageUserComponent,
+            import('./page-booking/page-bookings.component').then(
+                (m) => m.PageBookingsComponent,
             ),
         resolve: { layout: setLayout(PageLayout.Dashboard) },
     },
