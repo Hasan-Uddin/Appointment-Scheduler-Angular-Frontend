@@ -1,0 +1,150 @@
+@let state = eventTypeState.selectAll() | async;
+@let loading = state?.loading ?? false;
+@let eventTypes = state?.eventTypes ?? [];
+@let selectedEventTypes = state?.selectedEventTypes ?? [];
+
+<p-confirmdialog />
+
+<div class="card rounded border border-gray-300 bg-white shadow-sm">
+    
+    <!-- Header -->
+    <div class="border-b border-gray-200 p-6">
+        <div class="flex flex-col gap-4">
+            
+            <!-- Search & Filter Row -->
+            <div class="flex flex-col sm:flex-row gap-3">
+                
+                <!-- Search -->
+                <div class="flex-1">
+                    <p-iconfield iconPosition="left" class="w-full">
+                        <p-inputicon>
+                            <i class="pi pi-search"></i>
+                        </p-inputicon>
+                        <input
+                            pInputText
+                            type="text"
+                            [(ngModel)]="searchTerm"
+                            (input)="onSearchChange(searchTerm)"
+                            placeholder="Search event types..."
+                            class="w-full" />
+                    </p-iconfield>
+                </div>
+
+                <!-- Filter -->
+                <p-selectButton
+                    [options]="filterOptions"
+                    [(ngModel)]="selectedFilter"
+                    (ngModelChange)="onFilterChange($event)"
+                    optionLabel="label" />
+
+                <!-- Create Button -->
+                <p-button
+                    label="Create"
+                    icon="pi pi-plus"
+                    (onClick)="openCreateDialog()" />
+            </div>
+
+            <!-- Stats -->
+            @if (!loading && eventTypes.length > 0) {
+                <div class="flex items-center gap-6 text-sm">
+                    <div class="flex items-center gap-2">
+                        <span class="font-semibold text-gray-900">{{ eventTypes.length }}</span>
+                        <span class="text-gray-600">Total</span>
+                    </div>
+                    <div class="h-4 w-px bg-gray-300"></div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-semibold text-green-600">
+                            {{ activeCount }}
+                        </span>
+                        <span class="text-gray-600">Active</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-semibold text-gray-500">
+                            {{ inactiveCount }}
+                        </span>
+                        <span class="text-gray-600">Inactive</span>
+                    </div>
+                </div>
+            }
+
+            <!-- Bulk Actions -->
+            @if (selectedEventTypes.length > 0) {
+                <div class="pt-4 border-t border-gray-200">
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm font-medium text-gray-700">
+                            {{ selectedEventTypes.length }} selected
+                        </span>
+                        <p-button
+                            severity="danger"
+                            label="Delete ({{ selectedEventTypes.length }})"
+                            icon="pi pi-trash"
+                            [outlined]="true"
+                            size="small"
+                            (onClick)="confirmDeleteSelected(selectedEventTypes)" />
+                        <p-button
+                            severity="secondary"
+                            label="Clear"
+                            [text]="true"
+                            size="small"
+                            (onClick)="eventTypeState.resetSelectedEventTypes()" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Event Type List -->
+    <div class="p-6">
+        
+        <!-- Loading -->
+        @if (loading) {
+            <div class="space-y-4">
+                @for (i of [1,2,3]; track i) {
+                    <p-skeleton height="140px" styleClass="rounded-lg" />
+                }
+            </div>
+        }
+
+        <!-- List -->
+        @else if (eventTypes.length > 0) {
+            <div class="space-y-3">
+                @for (eventType of eventTypes; track eventType.id) {
+                    <app-event-type-tile
+                        [eventType]="eventType"
+                        [selected]="isSelected(eventType, selectedEventTypes)"
+                        (selectionChange)="onSelectionChange(eventType, $event)"
+                        (edit)="openEditDialog($event)"
+                        (delete)="confirmDelete($event)"
+                        (toggleActive)="toggleActive($event)"
+                        (copyLink)="copyBookingLink($event)"
+                        (duplicate)="duplicateEventType($event)" />
+                }
+            </div>
+        }
+
+        <!-- Empty State -->
+        @else {
+            <div class="flex flex-col items-center justify-center gap-4 py-20 text-gray-400">
+                <i class="pi pi-calendar-plus text-6xl"></i>
+                @if (searchTerm) {
+                    <div class="text-center">
+                        <p class="text-lg font-medium text-gray-600">No results found</p>
+                        <p class="text-sm mt-1">Try adjusting your search or filter</p>
+                    </div>
+                } @else {
+                    <div class="text-center">
+                        <p class="text-lg font-medium text-gray-600">No event types yet</p>
+                        <p class="text-sm mt-1">Create your first event type to start accepting bookings</p>
+                        <p-button
+                            label="Create Event Type"
+                            icon="pi pi-plus"
+                            [outlined]="true"
+                            class="mt-4"
+                            (onClick)="openCreateDialog()" />
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+</div>
