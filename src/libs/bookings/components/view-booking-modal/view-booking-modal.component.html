@@ -1,0 +1,121 @@
+<div class="flex flex-col gap-6 bg-gray-50 p-6">
+
+    <!-- Header: Avatar + Event Info -->
+    <div class="flex flex-col items-center gap-3 text-center">
+        <p-avatar
+            [label]="booking.guestName.charAt(0).toUpperCase()"
+            size="xlarge"
+            shape="circle"
+            styleClass="bg-primary text-white text-2xl font-bold" />
+
+        <div>
+            <h2 class="text-xl font-bold text-gray-800">
+                {{ booking.guestName}}
+            </h2>
+            <p class="text-sm text-gray-500">{{ booking.guestEmail}}</p>
+        </div>
+
+        <!-- Status Badge -->
+        <p-tag
+            [value]="booking.status"
+            [severity]="getStatusSeverity(booking.status!)" />
+    </div>
+
+    <p-divider />
+
+    <!-- Detail Cards -->
+    <div class="grid grid-cols-1 gap-3">
+
+        <!-- Event Type -->
+        <div class="flex items-start gap-3 rounded-lg border border-gray-100 bg-white p-3 shadow-sm">
+            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50">
+                <i class="pi pi-calendar text-blue-500"></i>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400">Event Type</p>
+                <p class="font-medium text-gray-800">
+                    {{ booking.eventTypeName }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Start Time -->
+        <div class="flex items-start gap-3 rounded-lg border border-gray-100 bg-white p-3 shadow-sm">
+            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-green-50">
+                <i class="pi pi-play text-green-500"></i>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400">Start Time</p>
+                <p class="font-medium text-gray-800">
+                    {{ booking.startTime | date: 'MMMM d, yyyy – HH:mm' }}
+                </p>
+            </div>
+        </div>
+
+        <!-- End Time -->
+        <div class="flex items-start gap-3 rounded-lg border border-gray-100 bg-white p-3 shadow-sm">
+            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-red-50">
+                <i class="pi pi-stop text-red-500"></i>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400">End Time</p>
+                <p class="font-medium text-gray-800">
+                    {{ booking.endTime | date: 'MMMM d, yyyy – HH:mm' }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Duration -->
+        <div class="flex items-start gap-3 rounded-lg border border-gray-100 bg-white p-3 shadow-sm">
+            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-purple-50">
+                <i class="pi pi-clock text-purple-500"></i>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400">Duration</p>
+                <p class="font-medium text-gray-800">
+                    {{ getDuration(booking.startTime, booking.endTime) }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Created At -->
+        <div class="flex items-start gap-3 rounded-lg border border-gray-100 bg-white p-3 shadow-sm">
+            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-orange-50">
+                <i class="pi pi-history text-orange-500"></i>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400">Created At</p>
+                <p class="font-medium text-gray-800">
+                    {{ booking.createdAt | date: 'MMMM d, yyyy – HH:mm' }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Booking ID -->
+        <div class="flex items-start gap-3 rounded-lg border border-gray-100 bg-white p-3 shadow-sm">
+            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gray-100">
+                <i class="pi pi-hashtag text-gray-500"></i>
+            </div>
+            <div class="min-w-0">
+                <p class="text-xs text-gray-400">Booking ID</p>
+                <p class="truncate font-mono text-sm font-medium text-gray-700">
+                    {{ booking.id }}
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <p-divider />
+
+    <!-- Footer -->
+    <div class="flex justify-end">
+        <p-button
+            label="Close"
+            icon="pi pi-times"
+            severity="secondary"
+            outlined
+            (click)="close()" />
+    </div>
+
+</div>
