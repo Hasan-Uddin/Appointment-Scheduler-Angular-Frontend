@@ -1,0 +1,93 @@
+<form [formGroup]="formService.form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 p-6">
+    
+    <!-- Name -->
+    <div class="flex flex-col gap-2">
+        <label for="name" class="font-medium text-sm text-gray-700">
+            Name <span class="text-red-500">*</span>
+        </label>
+        <input
+            id="name"
+            pInputText
+            formControlName="name"
+            placeholder="30-Minute Consultation"
+            class="w-full" />
+        @if (formService.controls('name')?.invalid && formService.controls('name')?.touched) {
+            <small class="text-red-500">Name is required (max 100 characters)</small>
+        }
+    </div>
+
+    <!-- Slug -->
+    <div class="flex flex-col gap-2">
+        <label for="slug" class="font-medium text-sm text-gray-700">
+            URL Slug <span class="text-red-500">*</span>
+        </label>
+        <div class="flex items-center">
+            <span class="text-gray-500 mr-2">/book/</span>
+            <input
+                id="slug"
+                pInputText
+                formControlName="slug"
+                placeholder="consultation-30"
+                class="flex-1" />
+        </div>
+        @if (formService.controls('slug')?.invalid && formService.controls('slug')?.touched) {
+            <small class="text-red-500">Only lowercase letters, numbers, and hyphens</small>
+        }
+    </div>
+
+    <!-- Description -->
+    <div class="flex flex-col gap-2">
+        <label for="description" class="font-medium text-sm text-gray-700">
+            Description
+        </label>
+        <textarea
+            id="description"
+            pInputTextarea
+            formControlName="description"
+            placeholder="Brief description..."
+            rows="3"
+            class="w-full"></textarea>
+    </div>
+
+    <!-- Duration & Color -->
+    <div class="grid grid-cols-2 gap-4">
+        
+        <!-- Duration -->
+        <div class="flex flex-col gap-2">
+            <label for="duration" class="font-medium text-sm text-gray-700">
+                Duration <span class="text-red-500">*</span>
+            </label>
+            <p-inputNumber
+                inputId="duration"
+                formControlName="durationMinutes"
+                [min]="5"
+                [max]="480"
+                [step]="5"
+                suffix=" min"
+                class="w-full" />
+        </div>
+
+        <!-- Color -->
+        <div class="flex flex-col gap-2">
+            <label for="color" class="font-medium text-sm text-gray-700">
+                Color
+            </label>
+            <p-colorPicker formControlName="color" />
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-end gap-2 pt-4 border-t mt-2">
+        <p-button
+            label="Cancel"
+            severity="secondary"
+            [outlined]="true"
+            (onClick)="cancel()"
+            [disabled]="loading" />
+        <p-button
+            label="Create"
+            type="submit"
+            [loading]="loading" />
+    </div>
+
+</form>
