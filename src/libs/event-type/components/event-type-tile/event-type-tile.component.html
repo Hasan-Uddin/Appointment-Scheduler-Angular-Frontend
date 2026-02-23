@@ -1,0 +1,121 @@
+<div
+    class="group relative overflow-hidden rounded-lg border transition-all duration-200 hover:shadow-md"
+    [ngClass]="{
+        'border-primary-500 bg-primary-50 ring-2 ring-primary-200': selected(),
+        'border-gray-200 bg-white hover:border-gray-300': !selected()
+    }">
+    
+    <!-- Color Bar -->
+    <div
+        class="absolute left-0 top-0 h-full w-1.5"
+        [style.background-color]="eventType().color || '#667eea'"></div>
+
+    <div class="flex items-start gap-4 p-4 pl-6">
+        
+        <!-- Checkbox -->
+        <div class="pt-1.5">
+            <p-checkbox
+                [binary]="true"
+                [ngModel]="selected()"
+                (ngModelChange)="onSelectionChange($event)" />
+        </div>
+
+        <!-- Content -->
+        <div class="flex-1 min-w-0">
+            
+            <!-- Header -->
+            <div class="flex items-start justify-between gap-3 mb-2">
+                <div class="flex-1 min-w-0">
+                    <h3 class="text-lg font-semibold text-gray-900 truncate mb-1">
+                        {{ eventType().name }}
+                    </h3>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-500 font-mono">
+                            /{{ eventType().slug }}
+                        </span>
+                        <button
+                            class="text-gray-400 hover:text-gray-600 transition-colors"
+                            (click)="copyLink.emit(eventType())"
+                            pTooltip="Copy booking link"
+                            tooltipPosition="top">
+                            <i class="pi pi-copy text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Status Badge -->
+                <p-tag
+                    [value]="eventType().isActive ? 'Active' : 'Inactive'"
+                    [severity]="eventType().isActive ? 'success' : 'secondary'"
+                    [rounded]="true" />
+            </div>
+
+            <!-- Description -->
+            @if (eventType().description) {
+                <p class="text-sm text-gray-600 mb-3 line-clamp-2">
+                    {{ eventType().description }}
+                </p>
+            }
+
+            <!-- Meta Info -->
+            <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+                
+                <!-- Duration -->
+                <div class="flex items-center gap-2 text-gray-600">
+                    <i class="pi pi-clock text-blue-500"></i>
+                    <span>{{ getDurationDisplay(eventType().durationMinutes) }}</span>
+                </div>
+
+                <!-- Created Date -->
+                <div class="flex items-center gap-2 text-gray-600">
+                    <i class="pi pi-calendar text-purple-500"></i>
+                    <span>{{ eventType().createdAt | date: 'MMM d, yyyy' }}</span>
+                </div>
+
+                <!-- Booking URL -->
+                <div class="flex items-center gap-2 text-gray-500 text-xs font-mono">
+                    <i class="pi pi-globe text-green-500"></i>
+                    <span class="truncate max-w-[200px]">{{ getBookingUrl() }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-1">
+            
+            <p-button
+                icon="pi pi-pencil"
+                [rounded]="true"
+                [text]="true"
+                size="small"
+                severity="info"
+                pTooltip="Edit"
+                tooltipPosition="top"
+                (onClick)="edit.emit(eventType())" />
+
+            <p-button
+                icon="pi pi-ellipsis-v"
+                [rounded]="true"
+                [text]="true"
+                size="small"
+                severity="secondary"
+                pTooltip="More actions"
+                tooltipPosition="top"
+                (onClick)="menu.toggle($event)"
+                #menuButton />
+
+            <p-menu #menu [model]="menuItems" [popup]="true" appendTo="body" />
+        </div>
+
+    </div>
+
+    <!-- Footer Stats (on hover) -->
+    <div class="border-t border-gray-100 px-6 py-2 bg-gray-50 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div class="flex items-center justify-between text-xs text-gray-500">
+            <span>0 bookings this month</span>
+            <span class="text-gray-400">•</span>
+            <span>Last updated: {{ eventType().updatedAt ? (eventType().updatedAt | date: 'short') : 'Never' }}</span>
+        </div>
+    </div>
+</div>
