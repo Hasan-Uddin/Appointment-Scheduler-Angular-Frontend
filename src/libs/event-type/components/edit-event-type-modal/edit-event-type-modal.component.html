@@ -1,0 +1,143 @@
+<form [formGroup]="formService.form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 p-6">
+    
+    <!-- Name -->
+    <div class="flex flex-col gap-2">
+        <label for="name" class="font-medium text-sm text-gray-700">
+            Name <span class="text-red-500">*</span>
+        </label>
+        <input
+            id="name"
+            pInputText
+            formControlName="name"
+            placeholder="30-Minute Consultation"
+            class="w-full" />
+        @if (formService.controls('name')?.invalid && formService.controls('name')?.touched) {
+            <small class="text-red-500">Name is required (max 100 characters)</small>
+        }
+    </div>
+
+    <!-- Slug (Read-only in edit mode) -->
+    <div class="flex flex-col gap-2">
+        <label for="slug" class="font-medium text-sm text-gray-700">
+            URL Slug
+        </label>
+        <div class="flex items-center">
+            <span class="text-gray-500 mr-2">/book/</span>
+            <input
+                id="slug"
+                pInputText
+                formControlName="slug"
+                placeholder="consultation-30"
+                class="flex-1"
+                [disabled]="true"
+                [class.bg-gray-50]="true"
+                [class.cursor-not-allowed]="true" />
+        </div>
+        <small class="text-gray-500 text-xs">
+            <i class="pi pi-info-circle mr-1"></i>
+            Slug cannot be changed after creation
+        </small>
+    </div>
+
+    <!-- Description -->
+    <div class="flex flex-col gap-2">
+        <label for="description" class="font-medium text-sm text-gray-700">
+            Description
+        </label>
+        <textarea
+            id="description"
+            pInputTextarea
+            formControlName="description"
+            placeholder="Brief description..."
+            rows="3"
+            class="w-full"></textarea>
+        @if (formService.controls('description')?.invalid && formService.controls('description')?.touched) {
+            <small class="text-red-500">Max 500 characters</small>
+        }
+    </div>
+
+    <!-- Duration & Color -->
+    <div class="grid grid-cols-2 gap-4">
+        
+        <!-- Duration -->
+        <div class="flex flex-col gap-2">
+            <label for="duration" class="font-medium text-sm text-gray-700">
+                Duration <span class="text-red-500">*</span>
+            </label>
+            <p-inputNumber
+                inputId="duration"
+                formControlName="durationMinutes"
+                [min]="5"
+                [max]="480"
+                [step]="5"
+                suffix=" min"
+                class="w-full" />
+            @if (formService.controls('durationMinutes')?.invalid && formService.controls('durationMinutes')?.touched) {
+                <small class="text-red-500">Duration: 5-480 minutes</small>
+            }
+        </div>
+
+        <!-- Color -->
+        <div class="flex flex-col gap-2">
+            <label for="color" class="font-medium text-sm text-gray-700">
+                Color
+            </label>
+            <div class="flex items-center gap-3">
+                <p-colorPicker formControlName="color" />
+                <div class="flex items-center gap-2">
+                    <div
+                        class="h-8 w-8 rounded border border-gray-300"
+                        [style.background-color]="formService.controls('color')?.value"></div>
+                    <span class="text-sm text-gray-600 font-mono">
+                        {{ formService.controls('color')?.value }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Box -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
+        <div class="flex items-start gap-2">
+            <i class="pi pi-info-circle text-blue-500 mt-0.5"></i>
+            <div class="text-sm text-blue-700">
+                <p class="font-medium mb-1">About Event Types</p>
+                <ul class="list-disc list-inside space-y-1 text-xs">
+                    <li>Changes will affect future bookings only</li>
+                    <li>Existing bookings will keep their original duration</li>
+                    <li>URL slug cannot be changed to maintain existing links</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-between items-center pt-4 border-t mt-2">
+        
+        <!-- Delete Button (left) -->
+        <p-button
+            label="Delete"
+            severity="danger"
+            [text]="true"
+            icon="pi pi-trash"
+            (onClick)="onDelete()"
+            [disabled]="loading" />
+
+        <!-- Save/Cancel (right) -->
+        <div class="flex gap-2">
+            <p-button
+                label="Cancel"
+                severity="secondary"
+                [outlined]="true"
+                (onClick)="cancel()"
+                [disabled]="loading" />
+            <p-button
+                label="Save Changes"
+                type="submit"
+                icon="pi pi-check"
+                [loading]="loading"
+                [disabled]="!formService.form.dirty" />
+        </div>
+    </div>
+
+</form>
