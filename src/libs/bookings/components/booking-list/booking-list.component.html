@@ -1,0 +1,160 @@
+@let state = bookingListStateService.selectAll() | async;
+@let loading = bookingListStateService.select('loading') | async;
+@let bookings = state?.bookings ?? [];
+@let selectedBookings = state?.selectedBookings ?? [];
+
+<p-confirmdialog />
+
+<div class="card rounded border border-gray-300 bg-white shadow">
+
+    @if (selectedBookings.length > 0) {
+        <p-toolbar class="mb-6">
+            <ng-template #start> 
+                <p-button
+                    severity="danger"
+                    label="Delete ({{ selectedBookings.length }})"
+                    icon="pi pi-trash"
+                    outlined
+                    (onClick)="confirmDeleteSelectedBookings(selectedBookings)" />
+            </ng-template>
+        </p-toolbar>
+    }
+
+    <p-table
+        #dt
+        [value]="bookings"
+        dataKey="id"
+        [paginator]="true"
+        [scrollable]="true"
+        [rows]="10"
+        [loading]="loading"
+        [selection]="selectedBookings"
+        (selectionChange)="bookingListStateService.setSelectedBookings($event)"
+        [globalFilterFields]="[
+            'id',
+            'guestName',
+            'guestEmail',
+            'eventTypeName',
+            'status',
+            'startTime',
+            'endTime',
+            'createdAt',
+        ]"
+        class="p-datatable-striped p-datatable-gridlines">
+
+        <!-- Search -->
+        <ng-template #caption>
+            <div class="flex">
+                <p-iconfield iconPosition="left" class="ml-auto">
+                    <p-inputicon>
+                        <i class="pi pi-search"></i>
+                    </p-inputicon>
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                        placeholder="Search bookings..." />
+                </p-iconfield>
+            </div>
+        </ng-template>
+
+        <!-- Header -->
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 2rem">
+                    <p-tableHeaderCheckbox />
+                </th>
+                <th style="width: 3rem">SL.</th>
+                <th pSortableColumn="guestName">
+                    <div class="flex items-center gap-2">
+                        Guest Name
+                        <p-sortIcon field="guestName" />
+                    </div>
+                </th>
+                <th>Guest Email</th>
+                <th pSortableColumn="eventTypeName">
+                    <div class="flex items-center gap-2">
+                        Event Type
+                        <p-sortIcon field="eventTypeName" />
+                    </div>
+                </th>
+                <th pSortableColumn="startTime">
+                    <div class="flex items-center gap-2">
+                        Start Time
+                        <p-sortIcon field="startTime" />
+                    </div>
+                </th>
+                <th pSortableColumn="endTime">
+                    <div class="flex items-center gap-2">
+                        End Time
+                        <p-sortIcon field="endTime" />
+                    </div>
+                </th>
+                <th pSortableColumn="createdAt">
+                    <div class="flex items-center gap-2">
+                        Created At
+                        <p-sortIcon field="createdAt" />
+                    </div>
+                </th>
+                <th pSortableColumn="status">
+                    <div class="flex items-center gap-2">
+                        Status
+                        <p-sortIcon field="status" />
+                    </div>
+                </th>
+                <th pFrozenColumn alignFrozen="right">Actions</th>
+            </tr>
+        </ng-template>
+
+        <!-- Body -->
+        <ng-template pTemplate="body" let-booking let-index="rowIndex">
+            <tr class="transition hover:bg-gray-50">
+                <td>
+                    <p-tableCheckbox [value]="booking" />
+                </td>
+                <td>{{ index + 1 }}</td>
+                <td>{{ booking.guestName }}</td>
+                <td>{{ booking.guestEmail }}</td>
+                <td>{{ booking.eventTypeName }}</td>
+                <td>{{ booking.startTime | date: 'yyyy-MM-dd HH:mm' }}</td>
+                <td>{{ booking.endTime | date: 'yyyy-MM-dd HH:mm' }}</td>
+                <td>{{ booking.createdAt | date: 'yyyy-MM-dd HH:mm' }}</td>
+                <td>
+                    <p-tag
+                        [value]="booking.status"
+                        [severity]="getStatusSeverity(booking.status)" />
+                </td>
+                <td alignFrozen="right" pFrozenColumn>
+                    <div class="flex items-center gap-2">
+                        <p-button
+                            icon="pi pi-eye"
+                            [rounded]="true"
+                            [outlined]="true"
+                            pTooltip="View Detail"
+                            (click)="openViewDialog(booking)" />
+                        <p-button
+                            icon="pi pi-trash"
+                            severity="danger"
+                            [rounded]="true"
+                            [outlined]="true"
+                            pTooltip="Delete"
+                            (click)="confirmDeleteBooking(booking)" />
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+
+        <!-- Empty -->
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="10">
+                    <div class="flex flex-col items-center justify-center gap-2 py-16 text-gray-400">
+                        <i class="pi pi-calendar text-5xl"></i>
+                        <p>No bookings found.</p>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+
+    </p-table>
+</div>
