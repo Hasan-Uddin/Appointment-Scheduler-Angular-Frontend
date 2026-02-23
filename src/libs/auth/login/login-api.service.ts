@@ -67,7 +67,7 @@ export class LoginApiService {
             const baseUrl = this.apiUrl.replace(/\/api$/, '')
             window.location.href = baseUrl + returnUrl
         } else {
-            this.router.navigate([dashboardRoutes.user]) // Default fallback
+            this.router.navigate([dashboardRoutes.bookings]) // Default fallback
         }
     }
 
