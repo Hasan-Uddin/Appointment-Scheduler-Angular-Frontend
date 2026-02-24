@@ -4,6 +4,7 @@ import { PageLayout, setLayout } from '../../../libs/common-components'
 export type DashboardRoutes = {
     bookings: Route
     eventType: Route
+    availability: Route
 }
 
 export const dashboardRoutes: DashboardRoutes = {
@@ -20,6 +21,14 @@ export const dashboardRoutes: DashboardRoutes = {
         loadComponent: () =>
             import('./page-event-types/page-event-types.component').then(
                 (m) => m.PageEventTypesComponent,
+            ),
+        resolve: { layout: setLayout(PageLayout.Dashboard) },
+    },
+    availability: {
+        path: 'host/availability',
+        loadComponent: () =>
+            import('./page-availabilities/page-availability.component').then(
+                (m) => m.PageAvailabilityComponent,
             ),
         resolve: { layout: setLayout(PageLayout.Dashboard) },
     },
