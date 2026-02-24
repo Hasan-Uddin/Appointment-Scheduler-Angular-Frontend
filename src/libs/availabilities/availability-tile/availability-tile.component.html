@@ -1,0 +1,116 @@
+<div
+    class="group relative overflow-hidden rounded-lg border transition-all duration-200 hover:shadow-md"
+    [ngClass]="{
+        'border-primary-500 bg-primary-50 ring-2 ring-primary-200': selected(),
+        'border-gray-200 bg-white hover:border-gray-300': !selected()
+    }">
+    
+    <!-- Status Indicator -->
+    <div
+        class="absolute left-0 top-0 h-full w-1.5"
+        [ngClass]="{
+            'bg-green-500': availability().isActive,
+            'bg-gray-300': !availability().isActive
+        }"></div>
+
+    <div class="flex items-center gap-4 p-4 pl-6">
+        
+        <!-- Checkbox -->
+        <div class="pt-0.5">
+            <p-checkbox
+                [binary]="true"
+                [ngModel]="selected()"
+                (ngModelChange)="onSelectionChange($event)" />
+        </div>
+
+        <!-- Day Badge -->
+        <div class="flex-shrink-0">
+            <div class="flex flex-col items-center justify-center w-16 h-16 rounded-lg"
+                [ngClass]="{
+                    'bg-blue-100 text-blue-700': availability().dayOfWeek === 1,
+                    'bg-purple-100 text-purple-700': availability().dayOfWeek === 2,
+                    'bg-green-100 text-green-700': availability().dayOfWeek === 3,
+                    'bg-orange-100 text-orange-700': availability().dayOfWeek === 4,
+                    'bg-pink-100 text-pink-700': availability().dayOfWeek === 5,
+                    'bg-indigo-100 text-indigo-700': availability().dayOfWeek === 6,
+                    'bg-yellow-100 text-yellow-700': availability().dayOfWeek === 0
+                }">
+                <div class="text-xs font-medium uppercase">
+                    {{ getDayName(availability().dayOfWeek).substring(0, 3) }}
+                </div>
+                <div class="text-lg font-bold">
+                    {{ availability().dayOfWeek }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="flex-1 min-w-0">
+            
+            <!-- Day Name & Status -->
+            <div class="flex items-center gap-2 mb-2">
+                <h3 class="text-lg font-semibold text-gray-900">
+                    {{ getDayName(availability().dayOfWeek) }}
+                </h3>
+                <p-tag
+                    [value]="availability().isActive ? 'Active' : 'Inactive'"
+                    [severity]="availability().isActive ? 'success' : 'secondary'"
+                    [rounded]="true"
+                    styleClass="text-xs" />
+            </div>
+
+            <!-- Time Info -->
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+                
+                <!-- Time Range -->
+                <div class="flex items-center gap-2 text-gray-700">
+                    <i class="pi pi-clock text-blue-500"></i>
+                    <span class="font-medium">
+                        {{ formatTime(availability().startTime) }} - {{ formatTime(availability().endTime) }}
+                    </span>
+                </div>
+
+                <!-- Duration -->
+                <div class="flex items-center gap-2 text-gray-600">
+                    <i class="pi pi-stopwatch text-purple-500"></i>
+                    <span>{{ getDuration() }}</span>
+                </div>
+
+                <!-- Created Date -->
+                <div class="flex items-center gap-2 text-gray-500 text-xs">
+                    <i class="pi pi-calendar-plus text-green-500"></i>
+                    <span>{{ availability().createdAt | date: 'MMM d, yyyy' }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-1">
+            
+            <p-button
+                icon="pi pi-pencil"
+                [rounded]="true"
+                [text]="true"
+                size="small"
+                severity="info"
+                pTooltip="Edit"
+                tooltipPosition="top"
+                (onClick)="edit.emit(availability())" />
+
+            <p-button
+                icon="pi pi-ellipsis-v"
+                [rounded]="true"
+                [text]="true"
+                size="small"
+                severity="secondary"
+                pTooltip="More actions"
+                tooltipPosition="top"
+                (onClick)="menu.toggle($event)"
+                #menuButton />
+
+            <p-menu #menu [model]="menuItems" [popup]="true" appendTo="body" />
+        </div>
+
+    </div>
+</div>
