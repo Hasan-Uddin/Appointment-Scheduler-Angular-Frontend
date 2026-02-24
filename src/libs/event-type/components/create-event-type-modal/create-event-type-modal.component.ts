@@ -9,6 +9,7 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog'
 import { EventTypeFormService } from '../../event-type-form.service'
 import { EventTypeApiService } from '../../event-type-api.service'
 import { AlertService } from '../../../common-service/lib/alert.service'
+import { TextareaModule } from 'primeng/textarea';
 
 @Component({
     selector: 'app-create-event-type-modal',
@@ -19,6 +20,7 @@ import { AlertService } from '../../../common-service/lib/alert.service'
         ButtonModule,
         InputTextModule,
         InputTextModule,
+        TextareaModule,
         InputNumberModule,
         ColorPickerModule,
     ],
