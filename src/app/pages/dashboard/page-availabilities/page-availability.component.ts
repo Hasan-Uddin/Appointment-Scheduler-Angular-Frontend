@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common'
 import { MessageService, ConfirmationService } from 'primeng/api'
 import { ToastModule } from 'primeng/toast'
 import { ContextUserStorageService } from '../../../../libs/auth/service/contextUser-storage.service'
-import { AvailabilityListComponent } from '../../../../libs/availabilities/availability-list/availability-list.component'
+import { AvailabilityListComponent } from '../../../../libs/availabilities/components/availability-list/availability-list.component'
 import { AvailabilityStateService } from '../../../../libs/availabilities/availability-state.service'
 
 @Component({

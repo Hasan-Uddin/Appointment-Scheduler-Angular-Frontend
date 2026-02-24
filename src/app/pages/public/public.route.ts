@@ -12,8 +12,8 @@ export const publicRoutes: PublicRoutes = {
     user_profile: {
         path: 'user-profile',
         loadComponent: () =>
-            import('./user-profile/user-profile.component').then(
-                (m) => m.UserProfileComponent,
+            import('..//page-todo/page-todo.component').then(
+                (m) => m.PageTodoComponent,
             ),
         resolve: { layout: setLayout(PageLayout.Public) },
     },

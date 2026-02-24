@@ -6,7 +6,7 @@ import { CheckboxModule } from 'primeng/checkbox'
 import { MenuModule } from 'primeng/menu'
 import { MenuItem } from 'primeng/api'
 import { FormsModule } from '@angular/forms'
-import { Availability } from '../availability.model'
+import { Availability } from '../../availability.model'
 
 @Component({
     selector: 'app-availability-tile',

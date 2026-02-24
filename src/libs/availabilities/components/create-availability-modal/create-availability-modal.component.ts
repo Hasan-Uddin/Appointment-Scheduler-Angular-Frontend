@@ -4,10 +4,10 @@ import { ReactiveFormsModule } from '@angular/forms'
 import { ButtonModule } from 'primeng/button'
 import { SelectModule } from 'primeng/select'
 import { DynamicDialogRef } from 'primeng/dynamicdialog'
-import { AlertService } from '../../common-service/lib/alert.service'
-import { AvailabilityApiService } from '../availability-api.service'
-import { AvailabilityFormService } from '../availability-form.service'
-import { AvailabilityStateService } from '../availability-state.service'
+import { AlertService } from '../../../common-service/lib/alert.service'
+import { AvailabilityApiService } from '../../availability-api.service'
+import { AvailabilityFormService } from '../../availability-form.service'
+import { AvailabilityStateService } from '../../availability-state.service'
 
 @Component({
     selector: 'app-create-availability-modal',
