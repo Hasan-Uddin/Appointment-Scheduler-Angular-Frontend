@@ -17,6 +17,7 @@ import { EventTypeStateService } from '../../event-type-state.service'
 import { CreateEventTypeModalComponent } from '../create-event-type-modal/create-event-type-modal.component'
 import { EditEventTypeModalComponent } from '../edit-event-type-modal/edit-event-type-modal.component'
 import { EventTypeTileComponent } from '../event-type-tile/event-type-tile.component'
+import { ContextUserStorageService } from '../../../auth/service/contextUser-storage.service'
 
 interface FilterOption {
     label: string
@@ -46,6 +47,9 @@ export class EventTypeListComponent {
     private confirmationService = inject(ConfirmationService)
     private dialogService = inject(DialogService)
     private alertService = inject(AlertService)
+    private userStorage = inject(ContextUserStorageService)
+    private email = this.userStorage.getEmail()
+    username = this.email?.split('@')[0] ?? null
 
     searchTerm = ''
 
@@ -190,7 +194,7 @@ export class EventTypeListComponent {
     }
 
     copyBookingLink(eventType: EventType) {
-        const link = `${window.location.origin}/book/${eventType.slug}`
+        const link = `${window.location.origin}/book/${ this.username }/${eventType.slug}`
         navigator.clipboard.writeText(link).then(() => {
             this.alertService.success('Booking link copied to clipboard')
         })
