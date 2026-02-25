@@ -6,9 +6,9 @@ import { ToastModule } from 'primeng/toast'
 import { ProgressSpinnerModule } from 'primeng/progressspinner'
 import { ButtonModule } from 'primeng/button'
 import { PublicBookingStateService } from '../../../../libs/public-booking'
-import { BookingFormComponent } from '../../../../libs/public-booking/components/booking-form/booking-form.component'
-import { CalendarViewComponent } from '../../../../libs/public-booking/components/calendar-view/calendar-view.component'
-import { TimeSlotSelectorComponent } from '../../../../libs/public-booking/components/time-slot-selector/time-slot-selector.component'
+import { PublicBookingFormComponent } from '../../../../libs/public-booking/components/public-booking-form/public-booking-form.component'
+import { PublicCalendarViewComponent } from '../../../../libs/public-booking/components/public-calendar-view/public-calendar-view.component'
+import { PublicTimeSlotSelectorComponent } from '../../../../libs/public-booking/components/public-time-slot-selector/public-time-slot-selector.component'
 import { TimeSlot, CreatePublicBookingRequest } from '../../../../libs/public-booking/public-booking.model'
 import { PublicBookingApiService } from '../../../../libs/public-booking/public-booking-api.service'
 
@@ -21,9 +21,9 @@ import { PublicBookingApiService } from '../../../../libs/public-booking/public-
         ToastModule,
         ProgressSpinnerModule,
         ButtonModule,
-        CalendarViewComponent,
-        TimeSlotSelectorComponent,
-        BookingFormComponent,
+        PublicCalendarViewComponent,
+        PublicTimeSlotSelectorComponent,
+        PublicBookingFormComponent,
     ],
     templateUrl: './page-public-booking.component.html',
     providers: [MessageService, PublicBookingStateService],
