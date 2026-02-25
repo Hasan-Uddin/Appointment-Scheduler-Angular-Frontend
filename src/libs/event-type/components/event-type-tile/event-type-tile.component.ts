@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core'
+import { Component, inject, input, output } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { ButtonModule } from 'primeng/button'
 import { TagModule } from 'primeng/tag'
@@ -7,6 +7,7 @@ import { MenuModule } from 'primeng/menu'
 import { MenuItem } from 'primeng/api'
 import { EventType } from '../../event-type.model'
 import { FormsModule } from '@angular/forms'
+import { ContextUserStorageService } from '../../../auth/service/contextUser-storage.service'
 
 @Component({
     selector: 'app-event-type-tile',
@@ -23,6 +24,11 @@ import { FormsModule } from '@angular/forms'
     styleUrl: './event-type-tile.component.css',
 })
 export class EventTypeTileComponent {
+
+    private userStorage = inject(ContextUserStorageService)
+    private email = this.userStorage.getEmail()
+    username = this.email?.split('@')[0] ?? null
+
     eventType = input.required<EventType>()
     selected = input<boolean>(false)
 
