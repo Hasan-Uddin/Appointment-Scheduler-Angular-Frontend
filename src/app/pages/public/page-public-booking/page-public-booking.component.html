@@ -1,0 +1,124 @@
+@let state = publicBookingStateService.selectAll() | async;
+@let eventType = state?.eventType;
+@let loading = state?.loading ?? false;
+@let error = state?.error ?? false;
+@let errorMessage = state?.errorMessage ?? '';
+@let selectedDate = state?.selectedDate ?? null;
+@let selectedSlot = state?.selectedSlot ?? null;
+
+<div class="min-h-screen p-5 pt-10 bg-gradient-to-b from-blue-50 to-indigo-50 text-black">
+    <p-toast />
+
+    <div class="max-w-5xl mx-auto">
+
+        <!-- Loading initial event -->
+        @if (loading && !eventType && !error) {
+            <div class="flex items-center justify-center h-[400px]">
+                <p-progressSpinner strokeWidth="4" animationDuration="1s" />
+            </div>
+        }
+
+        <!-- Error -->
+        @else if (error) {
+            <div class="bg-white rounded-lg shadow-md p-8 text-center">
+                <i class="pi pi-exclamation-circle text-5xl text-red-500 mb-4"></i>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">
+                    Event not available
+                </h2>
+                <p class="text-gray-600 mb-6">{{ errorMessage }}</p>
+                <p-button
+                    label="Back to Home"
+                    icon="pi pi-home"
+                    (onClick)="router.navigate(['/'])" />
+            </div>
+        }
+
+        <!-- Main content -->
+        @else if (eventType) {
+
+            <!-- Header: Host + Event -->
+            <div class="bg-white rounded-lg shadow-md border border-gray-200 p-6 mb-6">
+                <div class="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+                    <div class="flex items-start gap-4">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold">
+                            {{ eventType.hostName.charAt(0).toUpperCase() }}
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900 mb-1">
+                                {{ eventType.name }}
+                            </h1>
+                            <p class="text-sm text-gray-600">
+                                with {{ eventType.hostName }}
+                            </p>
+                            @if (eventType.description) {
+                                <p class="mt-2 text-sm text-gray-500">
+                                    {{ eventType.description }}
+                                </p>
+                            }
+                            <div class="mt-2 flex flex-wrap items-center gap-4 text-xs text-gray-600">
+                                <span class="flex items-center gap-1">
+                                    <i class="pi pi-clock text-blue-500"></i>
+                                    {{ eventType.durationMinutes }} min
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <i class="pi pi-video text-green-500"></i>
+                                    Google Meet
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content: Calendar + Right Pane -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+
+                <!-- Calendar -->
+                <app-calendar-view
+                    [currentMonth]="state!.currentMonth"
+                    [availableDays]="state!.availableDays"
+                    [selectedDate]="selectedDate"
+                    [loading]="loading"
+                    (dateSelected)="onDateSelected($event)"
+                    (previousMonth)="publicBookingStateService.goToPreviousMonth()"
+                    (nextMonth)="publicBookingStateService.goToNextMonth()" />
+
+                <!-- Right side: step-based -->
+                <div>
+                    @if (getCurrentStep() === 'date') {
+                        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
+                            <h3 class="text-base font-semibold text-gray-900 mb-2">
+                                Select a day
+                            </h3>
+                            <p class="text-sm text-gray-600">
+                                Choose a date from the calendar to see available times.
+                                Days with availability are highlighted.
+                            </p>
+                        </div>
+                    }
+
+                    @if (getCurrentStep() === 'time' && selectedDate) {
+                        <app-time-slot-selector
+                            [slots]="state!.timeSlots"
+                            [selectedSlot]="selectedSlot"
+                            [selectedDate]="selectedDate"
+                            [loading]="loading"
+                            (slotSelected)="onSlotSelected($event)"
+                            (back)="onBackFromTime()" />
+                    }
+
+                    @if (getCurrentStep() === 'form' && selectedDate && selectedSlot) {
+                        <app-booking-form
+                            [eventType]="eventType"
+                            [selectedSlot]="selectedSlot"
+                            [selectedDate]="selectedDate"
+                            [loading]="loading"
+                            (submitBooking)="onSubmitBooking($event)"
+                            (back)="onBackFromForm()" />
+                    }
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
