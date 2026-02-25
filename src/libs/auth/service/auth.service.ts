@@ -3,6 +3,8 @@ import { Injectable, inject } from '@angular/core'
 import { Router } from '@angular/router'
 import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs'
 import { environment } from '../../../environments/environment'
+import { ContextUserStorageService } from './contextUser-storage.service'
+import { UserInfo } from './user-info.model'
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -11,20 +13,28 @@ export class AuthService {
     private router = inject(Router)
     private http = inject(HttpClient)
     private authApiUrl = `${environment.authApiUrl}`
+    private userStorage = inject(ContextUserStorageService)
 
     isLoggedIn(): Observable<boolean> {
         return this.http
-            .get(`${this.authApiUrl}/me`, { withCredentials: true })
+            .get<UserInfo>(`${this.authApiUrl}/me`, { withCredentials: true })
             .pipe(
+                tap((user) => {
+                    this.userStorage.saveUserInfo({
+                        id: user.id,
+                        email: user.email,
+                        name: user.name,
+                        pictureUrl: user.pictureUrl,
+                    })
+                }),
                 map(() => true),
                 catchError((err) => {
                     if (err.status === 401) {
-                        return of(false) // user not logged in
+                        return of(false)
                     }
                     if (err.status === 0) {
                         console.error('Backend offline')
                         return of(false)
-                        // or handle differently — but DO NOT trigger login
                     }
                     return of(false)
                 }),

@@ -9,7 +9,8 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog'
 import { EventTypeFormService } from '../../event-type-form.service'
 import { EventTypeApiService } from '../../event-type-api.service'
 import { AlertService } from '../../../common-service/lib/alert.service'
-import { TextareaModule } from 'primeng/textarea';
+import { TextareaModule } from 'primeng/textarea'
+import { ContextUserStorageService } from '../../../auth/service/contextUser-storage.service'
 
 @Component({
     selector: 'app-create-event-type-modal',
@@ -32,6 +33,9 @@ export class CreateEventTypeModalComponent implements OnInit {
     private apiService = inject(EventTypeApiService)
     private dialogRef = inject(DynamicDialogRef)
     private alertService = inject(AlertService)
+    private userStorage = inject(ContextUserStorageService)
+    private email = this.userStorage.getEmail()
+    username = this.email?.split('@')[0] ?? null
 
     loading = false
 
@@ -65,7 +69,7 @@ export class CreateEventTypeModalComponent implements OnInit {
             },
         })
     }
-
+    
     cancel() {
         this.dialogRef.close(false)
     }

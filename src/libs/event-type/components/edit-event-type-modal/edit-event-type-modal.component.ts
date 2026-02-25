@@ -12,6 +12,7 @@ import { EventTypeFormService } from '../../event-type-form.service'
 import { EventTypeStateService } from '../../event-type-state.service'
 import { AlertService } from '../../../common-service/lib/alert.service'
 import { EventType } from '../../event-type.model'
+import { ContextUserStorageService } from '../../../auth/service/contextUser-storage.service'
 
 @Component({
     selector: 'app-edit-event-type-modal',
@@ -26,7 +27,7 @@ import { EventType } from '../../event-type.model'
         ConfirmDialogModule,
     ],
     templateUrl: './edit-event-type-modal.component.html',
-    providers: [ConfirmationService], // Add ConfirmationService provider
+    providers: [ConfirmationService, EventTypeStateService], // Add ConfirmationService provider
 })
 export class EditEventTypeModalComponent implements OnInit {
     protected formService = inject(EventTypeFormService)
@@ -35,6 +36,10 @@ export class EditEventTypeModalComponent implements OnInit {
     private config = inject(DynamicDialogConfig)
     private alertService = inject(AlertService)
     private confirmationService = inject(ConfirmationService)
+    private userStorage = inject(ContextUserStorageService)
+    private email = this.userStorage.getEmail()
+    username = this.email?.split('@')[0] ?? null
+
 
     loading = false
     deleting = false
