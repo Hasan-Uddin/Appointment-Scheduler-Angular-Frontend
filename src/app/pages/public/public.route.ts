@@ -5,15 +5,15 @@ import {
 } from '../../../libs/common-components/layouts/layouts-helper'
 
 export type PublicRoutes = {
-    user_profile: Route
+    public_booking: Route
 }
 
 export const publicRoutes: PublicRoutes = {
-    user_profile: {
-        path: 'user-profile',
+    public_booking: {
+        path: 'book/:username/:event-slug',
         loadComponent: () =>
-            import('..//page-todo/page-todo.component').then(
-                (m) => m.PageTodoComponent,
+            import('./page-public-booking/page-public-booking.component').then(
+                (m) => m.PagePublicBookingComponent,
             ),
         resolve: { layout: setLayout(PageLayout.Public) },
     },
