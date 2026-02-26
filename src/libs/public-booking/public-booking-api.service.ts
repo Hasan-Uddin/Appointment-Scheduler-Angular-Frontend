@@ -23,7 +23,7 @@ export class PublicBookingApiService {
 
     getEventTypeBySlug(username: string, slug: string): Observable<PublicEventType> {
         return this.http.get<PublicEventType>(
-            `${this.env.apiUrl}/public/${username}/${slug}`,
+            `${this.env.apiUrl}/public/event-types/${username}/${slug}`,
         )
     }
 
