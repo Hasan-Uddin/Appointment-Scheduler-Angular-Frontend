@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common'
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+    inject,
+} from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { ButtonModule } from 'primeng/button'
 import { InputTextModule } from 'primeng/inputtext'
@@ -42,20 +49,24 @@ export class PublicBookingFormComponent implements OnInit {
     }
 
     formatDate(date: string): string {
-        return new Date(date).toLocaleDateString('en-US', {
+        const d = new Date(date + 'T00:00:00Z')
+        return d.toLocaleDateString('en-US', {
             weekday: 'long',
             month: 'long',
             day: 'numeric',
             year: 'numeric',
+            timeZone: 'UTC',
         })
     }
 
     formatTime(time: string): string {
         const d = new Date(time)
+
         return d.toLocaleTimeString('en-US', {
             hour: 'numeric',
             minute: '2-digit',
             hour12: true,
+            timeZone: 'UTC',
         })
     }
 

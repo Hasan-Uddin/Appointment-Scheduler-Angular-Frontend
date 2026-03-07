@@ -1,9 +1,11 @@
 <div class="p-dialog-content">
-    <form [formGroup]="formService.form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
-        
+    <form
+        [formGroup]="formService.form"
+        (ngSubmit)="onSubmit()"
+        class="flex flex-col gap-4">
         <!-- Day of Week -->
         <div class="flex flex-col gap-2">
-            <label for="dayOfWeek" class="font-medium text-sm text-gray-700">
+            <label for="dayOfWeek" class="text-sm font-medium text-gray-700">
                 Day of Week <span class="text-red-500">*</span>
             </label>
             <p-select
@@ -16,17 +18,18 @@
                 (onChange)="onDayChange()"
                 [disabled]="loading"
                 styleClass="w-full" />
-            @if (formService.controls('dayOfWeek')?.invalid && formService.controls('dayOfWeek')?.touched) {
+            @if (dayOfWeekControl?.invalid && dayOfWeekControl?.touched) {
                 <small class="text-red-500">Please select a day</small>
             }
         </div>
 
         <!-- Time Range -->
         <div class="grid grid-cols-2 gap-4">
-            
             <!-- Start Time -->
             <div class="flex flex-col gap-2">
-                <label for="startTime" class="font-medium text-sm text-gray-700">
+                <label
+                    for="startTime"
+                    class="text-sm font-medium text-gray-700">
                     Start Time <span class="text-red-500">*</span>
                 </label>
                 <p-select
@@ -41,7 +44,7 @@
 
             <!-- End Time -->
             <div class="flex flex-col gap-2">
-                <label for="endTime" class="font-medium text-sm text-gray-700">
+                <label for="endTime" class="text-sm font-medium text-gray-700">
                     End Time <span class="text-red-500">*</span>
                 </label>
                 <p-select
@@ -56,65 +59,77 @@
         </div>
 
         <!-- Validation Error -->
-        @if (formService.form.hasError('invalidTimeRange') && formService.form.touched) {
-            <div class="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-2">
-                <i class="pi pi-exclamation-triangle text-red-500 mt-0.5"></i>
-                <p class="text-sm text-red-700">End time must be after start time</p>
+        @if (
+            formService.form.hasError('invalidTimeRange') &&
+            formService.form.touched
+        ) {
+            <div
+                class="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3">
+                <i class="pi pi-exclamation-triangle mt-0.5 text-red-500"></i>
+                <p class="text-sm text-red-700">
+                    End time must be after start time
+                </p>
             </div>
         }
 
         <!-- Quick Presets -->
-        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
-            <p class="text-sm font-medium text-gray-700 mb-3">⚡ Quick Presets</p>
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+            <p class="mb-3 text-sm font-medium text-gray-700">
+                ⚡ Quick Presets
+            </p>
             <div class="grid grid-cols-2 gap-2">
                 <button
                     type="button"
                     (click)="setWorkingHours()"
                     [disabled]="loading"
-                    class="px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
                     9 AM - 5 PM
                 </button>
                 <button
                     type="button"
                     (click)="setMorning()"
                     [disabled]="loading"
-                    class="px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
                     Morning
                 </button>
                 <button
                     type="button"
                     (click)="setAfternoon()"
                     [disabled]="loading"
-                    class="px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
                     Afternoon
                 </button>
                 <button
                     type="button"
                     (click)="setEvening()"
                     [disabled]="loading"
-                    class="px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
                     Evening
                 </button>
             </div>
         </div>
 
         <!-- Info Box -->
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+        <div class="rounded-lg border border-blue-200 bg-blue-50 p-3">
             <div class="flex items-start gap-2">
-                <i class="pi pi-info-circle text-blue-500 mt-0.5"></i>
+                <i class="pi pi-info-circle mt-0.5 text-blue-500"></i>
                 <div class="text-sm text-blue-700">
-                    <p class="font-medium mb-1">Tips</p>
-                    <ul class="list-disc list-inside space-y-1 text-xs">
-                        <li>You can add multiple time slots for the same day</li>
+                    <p class="mb-1 font-medium">Tips</p>
+                    <ul class="list-inside list-disc space-y-1 text-xs">
+                        <li>
+                            You can add multiple time slots for the same day
+                        </li>
                         <li>Break up your day with lunch breaks or meetings</li>
-                        <li>Slots can be temporarily disabled without deletion</li>
+                        <li>
+                            Slots can be temporarily disabled without deletion
+                        </li>
                     </ul>
                 </div>
             </div>
         </div>
 
         <!-- Actions -->
-        <div class="flex justify-end gap-2 pt-4 border-t mt-2">
+        <div class="mt-2 flex justify-end gap-2 border-t pt-4">
             <p-button
                 label="Cancel"
                 severity="secondary"
@@ -127,6 +142,5 @@
                 icon="pi pi-plus"
                 [loading]="loading" />
         </div>
-
     </form>
 </div>
