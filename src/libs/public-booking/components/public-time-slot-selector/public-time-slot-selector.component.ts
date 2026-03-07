@@ -28,6 +28,7 @@ export class PublicTimeSlotSelectorComponent {
             hour: 'numeric',
             minute: '2-digit',
             hour12: true,
+            timeZone: 'UTC'
         })
     }
 
@@ -37,6 +38,7 @@ export class PublicTimeSlotSelectorComponent {
             month: 'long',
             day: 'numeric',
             year: 'numeric',
+            timeZone: 'UTC'
         })
     }
 

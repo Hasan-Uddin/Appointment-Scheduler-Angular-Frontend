@@ -35,6 +35,7 @@ export class PublicCalendarViewComponent {
         return this.currentMonth.toLocaleDateString('en-US', {
             month: 'long',
             year: 'numeric',
+            timeZone: 'UTC'
         })
     }
 
@@ -64,7 +65,7 @@ export class PublicCalendarViewComponent {
 
         // Actual days
         for (let d = 1; d <= lastDay.getDate(); d++) {
-            const dateObj = new Date(year, month, d)
+            const dateObj = new Date(Date.UTC(year, month, d))
             const dateStr = dateObj.toISOString().split('T')[0]
 
             const dayInfo = this.availableDays.find((x) => x.date === dateStr)

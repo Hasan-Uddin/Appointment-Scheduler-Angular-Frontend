@@ -13,7 +13,7 @@ export class AvailabilityApiService extends ApiService<Availability, Availabilit
         @Inject(ENVIRONMENT)
         private env: EnvironmentConfig,
     ) {
-        super(inject(HttpClient), `${env.apiUrl}/availability`)
+        super(inject(HttpClient), `${env.apiUrl}`)
     }
 
     findAllAvailabilities(query: {
@@ -35,11 +35,11 @@ export class AvailabilityApiService extends ApiService<Availability, Availabilit
         if (query.search) {
             params = params.set('search', query.search)
         }
-        return this.http.get<Availability[]>(this.apiUrl, { params })
+        return this.http.get<Availability[]>(this.apiUrl+"/availabilities", { params })
     }
 
     createAvailability(availability: AvailabilityDto): Observable<Availability> {
-        return this.http.post<Availability>(this.apiUrl, availability)
+        return this.http.post<Availability>(this.apiUrl + "/available-slots", availability)
     }
 
     updateAvailability(id: string, data: UpdateAvailabilityDto): Observable<Availability> {

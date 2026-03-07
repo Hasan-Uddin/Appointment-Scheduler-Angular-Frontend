@@ -1,9 +1,15 @@
-import { Component, inject, OnInit } from '@angular/core'
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    inject,
+    OnInit,
+} from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { ReactiveFormsModule } from '@angular/forms'
 import { ButtonModule } from 'primeng/button'
 import { SelectModule } from 'primeng/select'
-import { DynamicDialogRef } from 'primeng/dynamicdialog'
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { AlertService } from '../../../common-service/lib/alert.service'
 import { AvailabilityApiService } from '../../availability-api.service'
 import { AvailabilityFormService } from '../../availability-form.service'
@@ -12,31 +18,35 @@ import { AvailabilityStateService } from '../../availability-state.service'
 @Component({
     selector: 'app-create-availability-modal',
     standalone: true,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        ButtonModule,
-        SelectModule,
-    ],
+    imports: [CommonModule, ReactiveFormsModule, ButtonModule, SelectModule],
     templateUrl: './create-availability-modal.component.html',
-    providers: [AvailabilityStateService],
+    providers: [AvailabilityFormService, AvailabilityStateService],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreateAvailabilityModalComponent implements OnInit {
+export class CreateAvailabilityModalComponent {
     protected formService = inject(AvailabilityFormService)
     private apiService = inject(AvailabilityApiService)
     private availabilityState = inject(AvailabilityStateService)
     private dialogRef = inject(DynamicDialogRef)
     private alertService = inject(AlertService)
+    private config = inject(DynamicDialogConfig)
 
+    dayOfWeekControl = this.formService.form.get('dayOfWeek')
     loading = false
     dayOptions = this.formService.getDayOptions()
     timeOptions = this.formService.getTimeOptions()
 
-    ngOnInit() {
-        // Pre-select current day
-        const today = new Date().getDay()
-        this.formService.controls('dayOfWeek')?.setValue(today)
+    constructor() {
+        const userId = this.config.data?.userId
+        if (userId) {
+            this.availabilityState.setState({ userId })
+        }
     }
+    // ngOnInit() {
+    //     // Pre-select current day
+    //     const today = new Date().getDay()
+    //     this.formService.controls('dayOfWeek')?.setValue(today)
+    // }
 
     onSubmit() {
         if (!this.formService.isValid()) {
@@ -48,7 +58,7 @@ export class CreateAvailabilityModalComponent implements OnInit {
 
         const state = this.availabilityState.getState()
         const formValue = this.formService.getValue()
-        
+
         const availabilityDto = {
             userId: state.userId,
             dayOfWeek: formValue.dayOfWeek,

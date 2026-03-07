@@ -30,9 +30,9 @@ export class ContextUserStorageService {
         this.windowRef.localStorage.setItem(this.contextUserRole, roleCode)
     }
 
-    getContextUserId(): string | null {
-        return this.windowRef.localStorage.getItem(this.contextUserId)
-    }
+    // getContextUserId(): string | null {
+    //     return this.windowRef.localStorage.getItem(this.contextUserId)
+    // }
 
     getContextUserRole(): string | null {
         return this.windowRef.localStorage.getItem(this.contextUserRole)
@@ -55,5 +55,10 @@ export class ContextUserStorageService {
     getEmail(): string | null {
         const user = this.getUserInfo()
         return user?.email ?? null
+    }
+
+    getContextUserId(): string | null {
+        const user = this.getUserInfo()
+        return user?.id ?? null
     }
 }
