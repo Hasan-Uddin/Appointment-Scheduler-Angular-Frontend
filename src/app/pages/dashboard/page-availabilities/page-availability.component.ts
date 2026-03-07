@@ -5,6 +5,7 @@ import { ToastModule } from 'primeng/toast'
 import { ContextUserStorageService } from '../../../../libs/auth/service/contextUser-storage.service'
 import { AvailabilityListComponent } from '../../../../libs/availabilities/components/availability-list/availability-list.component'
 import { AvailabilityStateService } from '../../../../libs/availabilities/availability-state.service'
+import { AvailabilityFormService } from '../../../../libs/availabilities'
 
 @Component({
     selector: 'app-page-availability',
@@ -15,11 +16,13 @@ import { AvailabilityStateService } from '../../../../libs/availabilities/availa
         MessageService,
         ConfirmationService,
         AvailabilityStateService,
+        AvailabilityFormService
     ],
 })
 export class PageAvailabilityComponent implements OnInit {
     protected availabilityState = inject(AvailabilityStateService)
     private contextUserStorage = inject(ContextUserStorageService)
+    protected formService = inject(AvailabilityFormService)
 
     ngOnInit(): void {
         const userId = this.contextUserStorage.getContextUserId()
