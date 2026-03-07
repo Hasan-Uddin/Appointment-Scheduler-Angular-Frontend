@@ -15,7 +15,7 @@ export class AvailabilityFormService {
     buildForm(): FormGroup {
         const { required } = Validators
         return this.fb.group({
-            dayOfWeek: [DayOfWeek.Monday, [required]],
+            dayOfWeek: [new Date().getDay(), [required]],
             startTime: ['09:00', [required]],
             endTime: ['17:00', [required]],
         }, {
