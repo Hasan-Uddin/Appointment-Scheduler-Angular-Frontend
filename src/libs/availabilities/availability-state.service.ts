@@ -10,7 +10,12 @@ import {
     throwError,
 } from 'rxjs'
 import { SimpleStore } from '../store'
-import { Availability, UpdateAvailabilityDto, AvailabilityGrouped, DayOfWeek } from './availability.model'
+import {
+    Availability,
+    UpdateAvailabilityDto,
+    AvailabilityGrouped,
+    DayOfWeek,
+} from './availability.model'
 import { AvailabilityApiService } from './availability-api.service'
 
 export type AvailabilityState = {
@@ -42,6 +47,7 @@ export class AvailabilityStateService extends SimpleStore<AvailabilityState> {
     }
 
     init(userId: string) {
+        if (!userId) return // safety check
         this.setState({ userId })
         this.continueLoadingAvailabilities()
     }
@@ -84,7 +90,9 @@ export class AvailabilityStateService extends SimpleStore<AvailabilityState> {
             catchError((error) => {
                 console.error('Error deleting availability:', error)
                 this.setState({ error: true })
-                return throwError(() => new Error('Failed to delete availability'))
+                return throwError(
+                    () => new Error('Failed to delete availability'),
+                )
             }),
             finalize(() => this.setState({ loading: false })),
         )
@@ -101,7 +109,9 @@ export class AvailabilityStateService extends SimpleStore<AvailabilityState> {
             catchError((error) => {
                 console.error('Error updating availability:', error)
                 this.setState({ error: true })
-                return throwError(() => new Error('Failed to update availability'))
+                return throwError(
+                    () => new Error('Failed to update availability'),
+                )
             }),
             finalize(() => this.setState({ loading: false })),
         )
@@ -133,7 +143,9 @@ export class AvailabilityStateService extends SimpleStore<AvailabilityState> {
             tap(() => {
                 const { availabilities } = this.getState()
                 this.setState({
-                    availabilities: availabilities.filter(a => a.dayOfWeek !== dayOfWeek)
+                    availabilities: availabilities.filter(
+                        (a) => a.dayOfWeek !== dayOfWeek,
+                    ),
                 })
             }),
             catchError((error) => {
@@ -148,7 +160,9 @@ export class AvailabilityStateService extends SimpleStore<AvailabilityState> {
     replaceAvailability(data: Availability) {
         const { availabilities } = this.getState()
         this.setState({
-            availabilities: availabilities.map((a) => (a.id === data.id ? data : a)),
+            availabilities: availabilities.map((a) =>
+                a.id === data.id ? data : a,
+            ),
         })
     }
 
@@ -160,7 +174,9 @@ export class AvailabilityStateService extends SimpleStore<AvailabilityState> {
 
     private removeAvailabilityFromState(id: string) {
         this.setState({
-            availabilities: this.getState().availabilities.filter((a) => a.id !== id),
+            availabilities: this.getState().availabilities.filter(
+                (a) => a.id !== id,
+            ),
         })
     }
 
@@ -183,22 +199,30 @@ export class AvailabilityStateService extends SimpleStore<AvailabilityState> {
     // Helper to group availabilities by day
     getGroupedAvailabilities(): AvailabilityGrouped[] {
         const { availabilities } = this.getState()
-        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-        
+        const dayNames = [
+            'Sunday',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday',
+        ]
+
         const grouped: AvailabilityGrouped[] = []
-        
+
         for (let i = 0; i < 7; i++) {
             const daySlots = availabilities
-                .filter(a => a.dayOfWeek === i)
+                .filter((a) => a.dayOfWeek === i)
                 .sort((a, b) => a.startTime.localeCompare(b.startTime))
-            
+
             grouped.push({
                 dayOfWeek: i as DayOfWeek,
                 dayName: dayNames[i],
-                slots: daySlots
+                slots: daySlots,
             })
         }
-        
+
         return grouped
     }
 }
