@@ -37,7 +37,7 @@ export class PublicBookingApiService {
             .set('month', month.toString())
 
         return this.http.get<AvailableDay[]>(
-            `${this.env.apiUrl}/public/event-types/${eventTypeId}/available-days`,
+            `${this.env.apiUrl}/public/availability/${eventTypeId}/available-days`,
             { params },
         )
     }
@@ -46,7 +46,7 @@ export class PublicBookingApiService {
         const params = new HttpParams().set('date', date)
 
         return this.http.get<TimeSlot[]>(
-            `${this.env.apiUrl}/public/event-types/${eventTypeId}/slots`,
+            `${this.env.apiUrl}/public/available-slots/${eventTypeId}/slots`,
             { params },
         )
     }
