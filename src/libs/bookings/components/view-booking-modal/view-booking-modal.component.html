@@ -1,4 +1,5 @@
 <div class="flex flex-col gap-6 bg-gray-50 p-6">
+    <app-time-settings></app-time-settings>
 
     <!-- Header: Avatar + Event Info -->
     <div class="flex flex-col items-center gap-3 text-center">
@@ -47,7 +48,7 @@
             <div>
                 <p class="text-xs text-gray-400">Start Time</p>
                 <p class="font-medium text-gray-800">
-                    {{ booking.startTime | date: 'MMMM d, yyyy – HH:mm' }}
+                    {{ booking.startTime | appTime }}
                 </p>
             </div>
         </div>
@@ -60,7 +61,7 @@
             <div>
                 <p class="text-xs text-gray-400">End Time</p>
                 <p class="font-medium text-gray-800">
-                    {{ booking.endTime | date: 'MMMM d, yyyy – HH:mm' }}
+                    {{ booking.endTime | appTime }}
                 </p>
             </div>
         </div>
@@ -86,7 +87,7 @@
             <div>
                 <p class="text-xs text-gray-400">Created At</p>
                 <p class="font-medium text-gray-800">
-                    {{ booking.createdAt | date: 'MMMM d, yyyy – HH:mm' }}
+                    {{ booking.createdAt | appTime }}
                 </p>
             </div>
         </div>

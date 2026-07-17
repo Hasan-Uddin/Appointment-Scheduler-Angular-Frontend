@@ -116,9 +116,9 @@
                 <td>{{ booking.guestName }}</td>
                 <td>{{ booking.guestEmail }}</td>
                 <td>{{ booking.eventTypeName }}</td>
-                <td>{{ booking.startTime | date: 'yyyy-MM-dd HH:mm' }}</td>
-                <td>{{ booking.endTime | date: 'yyyy-MM-dd HH:mm' }}</td>
-                <td>{{ booking.createdAt | date: 'yyyy-MM-dd HH:mm' }}</td>
+                <td>{{ booking.startTime | appTime }}</td>
+                <td>{{ booking.endTime | appTime }}</td>
+                <td>{{ booking.createdAt | appTime }}</td>
                 <td>
                     <p-tag
                         [value]="booking.status"

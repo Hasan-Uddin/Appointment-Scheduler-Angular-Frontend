@@ -69,7 +69,7 @@
                 <!-- Created Date -->
                 <div class="flex items-center gap-2 text-gray-600">
                     <i class="pi pi-calendar text-purple-500"></i>
-                    <span>{{ eventType().createdAt | date: 'MMM d, yyyy' }}</span>
+                    <span>{{ eventType().createdAt | appTime: 'date' }}</span>
                 </div>
 
                 <!-- Booking URL -->
@@ -115,7 +115,7 @@
         <div class="flex items-center justify-between text-xs text-gray-500">
             <span>0 bookings this month</span>
             <span class="text-gray-400">•</span>
-            <span>Last updated: {{ eventType().updatedAt ? (eventType().updatedAt | date: 'short') : 'Never' }}</span>
+            <span>Last updated: {{ eventType().updatedAt ? (eventType().updatedAt | appTime) : 'Never' }}</span>
         </div>
     </div>
 </div>

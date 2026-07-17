@@ -79,7 +79,7 @@
                 <!-- Created Date -->
                 <div class="flex items-center gap-2 text-gray-500 text-xs">
                     <i class="pi pi-calendar-plus text-green-500"></i>
-                    <span>{{ availability().createdAt | date: 'MMM d, yyyy' }}</span>
+                    <span>{{ availability().createdAt | appTime: 'date' }}</span>
                 </div>
             </div>
 

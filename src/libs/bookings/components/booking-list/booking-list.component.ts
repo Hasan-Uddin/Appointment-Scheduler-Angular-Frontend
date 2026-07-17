@@ -11,6 +11,7 @@ import { TableModule } from 'primeng/table'
 import { TagModule } from 'primeng/tag'
 import { Toolbar } from 'primeng/toolbar'
 import { forkJoin } from 'rxjs'
+import { AppTimePipe } from '../../../common-pipes/app-time.pipe'
 import { AlertService } from '../../../common-service/lib/alert.service'
 import { Booking } from '../../booking.model'
 import { BookingListStateService } from '../../booking-state.service'
@@ -28,6 +29,7 @@ import { ViewBookingModalComponent } from '../view-booking-modal/view-booking-mo
         ConfirmDialogModule,
         TagModule,
         Toolbar,
+        AppTimePipe,
     ],
     templateUrl: './booking-list.component.html',
     styleUrl: './booking-list.component.css',
@@ -64,17 +66,19 @@ export class BookingListComponent {
             header: 'Delete Confirmation',
             message: `Are you sure you want to delete booking for ${booking.guestName}?`,
             accept: () => {
-                this.bookingListStateService.deleteBooking(booking.id).subscribe({
-                    next: () => {
-                        this.alertService.success(
-                            `Booking for ${booking.guestName} deleted successfully`,
-                        )
-                    },
-                    error: (err) => {
-                        console.error('Delete booking failed:', err)
-                        this.alertService.error('Delete booking failed')
-                    },
-                })
+                this.bookingListStateService
+                    .deleteBooking(booking.id)
+                    .subscribe({
+                        next: () => {
+                            this.alertService.success(
+                                `Booking for ${booking.guestName} deleted successfully`,
+                            )
+                        },
+                        error: (err) => {
+                            console.error('Delete booking failed:', err)
+                            this.alertService.error('Delete booking failed')
+                        },
+                    })
             },
         })
     }
