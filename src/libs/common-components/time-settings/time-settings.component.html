@@ -1,0 +1,31 @@
+<div class="flex items-center gap-3">
+  <p-select 
+    [options]="timezones" 
+    [(ngModel)]="selectedTimezone" 
+    [filter]="true" 
+    filterBy="label" 
+    placeholder="Select Timezone"
+    styleClass="w-full md:w-[250px]"
+    appendTo="body">
+    <ng-template pTemplate="selectedItem" let-selectedOption>
+        <div class="flex items-center gap-2">
+            <i class="pi pi-globe"></i>
+            <div>{{ selectedOption?.label || 'Select Timezone' }}</div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="item" let-option>
+        <div class="flex items-center gap-2">
+            <i class="pi pi-clock text-gray-400"></i>
+            <div>{{ option.label }}</div>
+        </div>
+    </ng-template>
+  </p-select>
+
+  <p-toggleButton 
+    [(ngModel)]="is24Hour" 
+    onLabel="24h" 
+    offLabel="12h" 
+    onIcon="pi pi-clock" 
+    offIcon="pi pi-clock">
+  </p-toggleButton>
+</div>
