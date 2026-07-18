@@ -32,9 +32,31 @@ export class TimeSettingsComponent {
     }
 
     get timezones(): any[] {
-        return this.timeSettingsService.availableTimezones.map((tz) => ({
-            label: tz,
-            value: tz,
-        }))
+        const date = new Date()
+        return this.timeSettingsService.availableTimezones.map((tz) => {
+            let offsetLabel = 'UTC'
+            try {
+                const parts = new Intl.DateTimeFormat('en-US', {
+                    timeZone: tz,
+                    timeZoneName: 'longOffset',
+                }).formatToParts(date)
+
+                const tzName = parts.find(
+                    (p) => p.type === 'timeZoneName',
+                )?.value
+                if (tzName) {
+                    offsetLabel = tzName.replace('GMT', 'UTC')
+                }
+            } catch (e) {
+                // Fallback if timezone formatting fails
+            }
+
+            const city = tz.split('/').pop()?.replace(/_/g, ' ') || tz
+
+            return {
+                label: `(${offsetLabel}) ${city}`,
+                value: tz,
+            }
+        })
     }
 }
