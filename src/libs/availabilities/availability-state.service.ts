@@ -12,9 +12,9 @@ import {
 import { SimpleStore } from '../store'
 import {
     Availability,
-    UpdateAvailabilityDto,
     AvailabilityGrouped,
     DayOfWeek,
+    UpdateAvailabilityDto,
 } from './availability.model'
 import { AvailabilityApiService } from './availability-api.service'
 
@@ -194,35 +194,5 @@ export class AvailabilityStateService extends SimpleStore<AvailabilityState> {
 
     setDayFilter(dayOfWeek?: number) {
         this.setState({ selectedDayFilter: dayOfWeek })
-    }
-
-    // Helper to group availabilities by day
-    getGroupedAvailabilities(): AvailabilityGrouped[] {
-        const { availabilities } = this.getState()
-        const dayNames = [
-            'Sunday',
-            'Monday',
-            'Tuesday',
-            'Wednesday',
-            'Thursday',
-            'Friday',
-            'Saturday',
-        ]
-
-        const grouped: AvailabilityGrouped[] = []
-
-        for (let i = 0; i < 7; i++) {
-            const daySlots = availabilities
-                .filter((a) => a.dayOfWeek === i)
-                .sort((a, b) => a.startTime.localeCompare(b.startTime))
-
-            grouped.push({
-                dayOfWeek: i as DayOfWeek,
-                dayName: dayNames[i],
-                slots: daySlots,
-            })
-        }
-
-        return grouped
     }
 }
