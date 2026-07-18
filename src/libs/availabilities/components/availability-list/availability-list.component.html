@@ -1,6 +1,6 @@
 @let state = availabilityState.selectAll() | async;
 @let loading = state?.loading ?? false;
-@let availabilities = state?.availabilities ?? [];
+@let availabilities = getLocalAvailabilities();
 @let selectedAvailabilities = state?.selectedAvailabilities ?? [];
 
 <p-confirmdialog />

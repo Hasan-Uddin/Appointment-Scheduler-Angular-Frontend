@@ -239,6 +239,26 @@ export class AvailabilityListComponent {
 
     // Helper Methods
 
+    getLocalAvailabilities(): Availability[] {
+        const { availabilities } = this.availabilityState.getState()
+        return availabilities.map((a) => {
+            const localStart = this.timeSettingsService.convertUtcToLocal(
+                a.dayOfWeek,
+                a.startTime,
+            )
+            const localEnd = this.timeSettingsService.convertUtcToLocal(
+                a.dayOfWeek,
+                a.endTime,
+            )
+            return {
+                ...a,
+                dayOfWeek: localStart.dayOfWeek,
+                startTime: localStart.time,
+                endTime: localEnd.time,
+            }
+        })
+    }
+
     getDayName(day: number): string {
         const days = [
             'Sunday',
@@ -253,7 +273,32 @@ export class AvailabilityListComponent {
     }
 
     getGroupedAvailabilities() {
-        return this.availabilityState.getGroupedAvailabilities()
+        const localAvailabilities = this.getLocalAvailabilities()
+        const dayNames = [
+            'Sunday',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday',
+        ]
+
+        const grouped: any[] = []
+
+        for (let i = 0; i < 7; i++) {
+            const daySlots = localAvailabilities
+                .filter((a) => a.dayOfWeek === i)
+                .sort((a, b) => a.startTime.localeCompare(b.startTime))
+
+            grouped.push({
+                dayOfWeek: i,
+                dayName: dayNames[i],
+                slots: daySlots,
+            })
+        }
+
+        return grouped
     }
 
     getActiveDaysCount(availabilities: Availability[]): number {
