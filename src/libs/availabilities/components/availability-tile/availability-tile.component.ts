@@ -1,11 +1,13 @@
-import { Component, input, output } from '@angular/core'
 import { CommonModule } from '@angular/common'
+import { Component, inject, input, output } from '@angular/core'
+import { FormsModule } from '@angular/forms'
+import { MenuItem } from 'primeng/api'
 import { ButtonModule } from 'primeng/button'
-import { TagModule } from 'primeng/tag'
 import { CheckboxModule } from 'primeng/checkbox'
 import { MenuModule } from 'primeng/menu'
-import { MenuItem } from 'primeng/api'
-import { FormsModule } from '@angular/forms'
+import { TagModule } from 'primeng/tag'
+import { AppTimePipe } from '../../../common-pipes/app-time.pipe'
+import { TimeSettingsService } from '../../../common-service/lib/time-settings.service'
 import { Availability } from '../../availability.model'
 
 @Component({
@@ -18,6 +20,7 @@ import { Availability } from '../../availability.model'
         CheckboxModule,
         FormsModule,
         MenuModule,
+        AppTimePipe,
     ],
     templateUrl: './availability-tile.component.html',
     styleUrl: './availability-tile.component.css',
@@ -42,7 +45,9 @@ export class AvailabilityTileComponent {
             },
             {
                 label: this.availability().isActive ? 'Deactivate' : 'Activate',
-                icon: this.availability().isActive ? 'pi pi-eye-slash' : 'pi pi-eye',
+                icon: this.availability().isActive
+                    ? 'pi pi-eye-slash'
+                    : 'pi pi-eye',
                 command: () => this.toggleActive.emit(this.availability()),
             },
             { separator: true },
@@ -60,28 +65,45 @@ export class AvailabilityTileComponent {
     }
 
     getDayName(day: number): string {
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+        const days = [
+            'Sunday',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday',
+        ]
         return days[day]
     }
 
     getDuration(): string {
-        const [startHour, startMin] = this.availability().startTime.split(':').map(Number)
-        const [endHour, endMin] = this.availability().endTime.split(':').map(Number)
-        
+        const [startHour, startMin] = this.availability()
+            .startTime.split(':')
+            .map(Number)
+        const [endHour, endMin] = this.availability()
+            .endTime.split(':')
+            .map(Number)
+
         const startMinutes = startHour * 60 + startMin
         const endMinutes = endHour * 60 + endMin
         const duration = endMinutes - startMinutes
-        
+
         const hours = Math.floor(duration / 60)
         const mins = duration % 60
-        
+
         if (hours === 0) return `${mins} min`
         if (mins === 0) return `${hours} hr`
         return `${hours} hr ${mins} min`
     }
 
+    private timeSettingsService = inject(TimeSettingsService)
+
     formatTime(time: string): string {
         const [hour, minute] = time.split(':').map(Number)
+        if (this.timeSettingsService.use24HourFormat()) {
+            return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
+        }
         const period = hour >= 12 ? 'PM' : 'AM'
         const hour12 = hour % 12 || 12
         return `${hour12}:${minute.toString().padStart(2, '0')} ${period}`

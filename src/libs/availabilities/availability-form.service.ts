@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core'
-import { AbstractControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms'
+import {
+    AbstractControl,
+    FormGroup,
+    NonNullableFormBuilder,
+    Validators,
+} from '@angular/forms'
 import { Availability, DayOfWeek } from './availability.model'
 
 @Injectable({
@@ -14,24 +19,29 @@ export class AvailabilityFormService {
 
     buildForm(): FormGroup {
         const { required } = Validators
-        return this.fb.group({
-            dayOfWeek: [new Date().getDay(), [required]],
-            startTime: ['09:00', [required]],
-            endTime: ['17:00', [required]],
-        }, {
-            validators: [this.timeRangeValidator]
-        })
+        return this.fb.group(
+            {
+                dayOfWeek: [new Date().getDay(), [required]],
+                startTime: ['09:00', [required]],
+                endTime: ['17:00', [required]],
+            },
+            {
+                validators: [this.timeRangeValidator],
+            },
+        )
     }
 
-    private timeRangeValidator(control: AbstractControl): { [key: string]: boolean } | null {
-        const group = control as FormGroup;
-        const start = group.get('startTime')?.value;
-        const end = group.get('endTime')?.value;
-        
+    private timeRangeValidator(
+        control: AbstractControl,
+    ): { [key: string]: boolean } | null {
+        const group = control as FormGroup
+        const start = group.get('startTime')?.value
+        const end = group.get('endTime')?.value
+
         if (start && end && start >= end) {
-            return { invalidTimeRange: true };
+            return { invalidTimeRange: true }
         }
-        return null;
+        return null
     }
 
     controls(control: string) {
@@ -74,13 +84,21 @@ export class AvailabilityFormService {
         ]
     }
 
-    getTimeOptions() {
-        const times: string[] = []
+    getTimeOptions(use24Hour = true) {
+        const times: { label: string; value: string }[] = []
         for (let h = 0; h < 24; h++) {
             for (let m = 0; m < 60; m += 30) {
-                const hour = h.toString().padStart(2, '0')
+                const hour24 = h.toString().padStart(2, '0')
                 const minute = m.toString().padStart(2, '0')
-                times.push(`${hour}:${minute}`)
+                const value = `${hour24}:${minute}`
+
+                let label = value
+                if (!use24Hour) {
+                    const period = h >= 12 ? 'PM' : 'AM'
+                    const hour12 = h % 12 || 12
+                    label = `${hour12}:${minute} ${period}`
+                }
+                times.push({ label, value })
             }
         }
         return times

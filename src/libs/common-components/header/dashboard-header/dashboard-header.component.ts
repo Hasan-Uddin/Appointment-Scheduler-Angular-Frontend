@@ -2,11 +2,12 @@ import { Component, inject } from '@angular/core'
 import { RouterModule } from '@angular/router'
 import { AuthService } from '../../../auth/service/auth.service'
 import { SidebarService } from '../../../common-service/sidebar.service'
+import { TimeSettingsComponent } from '../../time-settings/time-settings.component'
 
 @Component({
     selector: 'app-dashboard-header',
     standalone: true,
-    imports: [RouterModule],
+    imports: [RouterModule, TimeSettingsComponent],
     templateUrl: './dashboard-header.component.html',
     styleUrl: './dashboard-header.component.css',
 })
