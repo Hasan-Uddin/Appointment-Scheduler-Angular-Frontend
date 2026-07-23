@@ -1,10 +1,12 @@
-import { Component, inject } from '@angular/core'
 import { CommonModule, DatePipe } from '@angular/common'
-import { ButtonModule } from 'primeng/button'
-import { TagModule } from 'primeng/tag'
+import { Component, inject } from '@angular/core'
 import { AvatarModule } from 'primeng/avatar'
+import { ButtonModule } from 'primeng/button'
 import { DividerModule } from 'primeng/divider'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
+import { TagModule } from 'primeng/tag'
+import { TimeSettingsComponent } from '../../../common-components/time-settings/time-settings.component'
+import { AppTimePipe } from '../../../common-pipes/app-time.pipe'
 import { Booking } from '../../booking.model'
 
 @Component({
@@ -14,7 +16,9 @@ import { Booking } from '../../booking.model'
         ButtonModule,
         TagModule,
         AvatarModule,
-        DividerModule
+        DividerModule,
+        AppTimePipe,
+        TimeSettingsComponent,
     ],
     templateUrl: './view-booking-modal.component.html',
 })
@@ -33,7 +37,7 @@ export class ViewBookingModalComponent {
         }
         return map[status?.toLowerCase()] ?? 'warn'
     }
-    
+
     getDuration(start?: string, end?: string): string {
         if (!start || !end) return '—'
         const diffMs = new Date(end).getTime() - new Date(start).getTime()

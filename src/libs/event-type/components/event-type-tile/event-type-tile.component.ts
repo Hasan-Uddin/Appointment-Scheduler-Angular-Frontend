@@ -1,13 +1,14 @@
-import { Component, inject, input, output } from '@angular/core'
 import { CommonModule } from '@angular/common'
+import { Component, inject, input, output } from '@angular/core'
+import { FormsModule } from '@angular/forms'
+import { MenuItem } from 'primeng/api'
 import { ButtonModule } from 'primeng/button'
-import { TagModule } from 'primeng/tag'
 import { CheckboxModule } from 'primeng/checkbox'
 import { MenuModule } from 'primeng/menu'
-import { MenuItem } from 'primeng/api'
-import { EventType } from '../../event-type.model'
-import { FormsModule } from '@angular/forms'
+import { TagModule } from 'primeng/tag'
 import { ContextUserStorageService } from '../../../auth/service/contextUser-storage.service'
+import { AppTimePipe } from '../../../common-pipes/app-time.pipe'
+import { EventType } from '../../event-type.model'
 
 @Component({
     selector: 'app-event-type-tile',
@@ -19,12 +20,12 @@ import { ContextUserStorageService } from '../../../auth/service/contextUser-sto
         CheckboxModule,
         FormsModule,
         MenuModule,
+        AppTimePipe,
     ],
     templateUrl: './event-type-tile.component.html',
     styleUrl: './event-type-tile.component.css',
 })
 export class EventTypeTileComponent {
-
     private userStorage = inject(ContextUserStorageService)
     private email = this.userStorage.getEmail()
     username = this.email?.split('@')[0] ?? null
@@ -55,7 +56,9 @@ export class EventTypeTileComponent {
             },
             {
                 label: this.eventType().isActive ? 'Deactivate' : 'Activate',
-                icon: this.eventType().isActive ? 'pi pi-eye-slash' : 'pi pi-eye',
+                icon: this.eventType().isActive
+                    ? 'pi pi-eye-slash'
+                    : 'pi pi-eye',
                 command: () => this.toggleActive.emit(this.eventType()),
             },
             {

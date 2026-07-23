@@ -1,24 +1,26 @@
-import { Component, inject } from '@angular/core'
 import { CommonModule } from '@angular/common'
+import { Component, inject } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { ConfirmationService } from 'primeng/api'
 import { ButtonModule } from 'primeng/button'
+import { CheckboxModule } from 'primeng/checkbox'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { DialogService } from 'primeng/dynamicdialog'
 import { IconFieldModule } from 'primeng/iconfield'
 import { InputIconModule } from 'primeng/inputicon'
 import { InputTextModule } from 'primeng/inputtext'
-import { SkeletonModule } from 'primeng/skeleton'
 import { SelectButtonModule } from 'primeng/selectbutton'
-import { CheckboxModule } from 'primeng/checkbox'
+import { SkeletonModule } from 'primeng/skeleton'
+import { TagModule } from 'primeng/tag'
+import { TooltipModule } from 'primeng/tooltip'
 import { forkJoin } from 'rxjs'
+import { AppTimePipe } from '../../../common-pipes/app-time.pipe'
 import { AlertService } from '../../../common-service/lib/alert.service'
-import { AvailabilityStateService } from '../../availability-state.service'
+import { TimeSettingsService } from '../../../common-service/lib/time-settings.service'
 import { Availability } from '../../availability.model'
+import { AvailabilityStateService } from '../../availability-state.service'
 import { CreateAvailabilityModalComponent } from '../create-availability-modal/create-availability-modal.component'
 import { EditAvailabilityModalComponent } from '../edit-availability-modal/edit-availability-modal.component'
-import { TooltipModule } from 'primeng/tooltip'
-import { TagModule } from 'primeng/tag'
 
 interface DayFilter {
     label: string
@@ -41,6 +43,7 @@ interface DayFilter {
         CheckboxModule,
         TagModule,
         TooltipModule,
+        AppTimePipe,
     ],
     templateUrl: './availability-list.component.html',
     styleUrl: './availability-list.component.css',
@@ -50,6 +53,7 @@ export class AvailabilityListComponent {
     private confirmationService = inject(ConfirmationService)
     private dialogService = inject(DialogService)
     private alertService = inject(AlertService)
+    private timeSettingsService = inject(TimeSettingsService)
 
     searchTerm = ''
 
@@ -235,6 +239,26 @@ export class AvailabilityListComponent {
 
     // Helper Methods
 
+    getLocalAvailabilities(): Availability[] {
+        const { availabilities } = this.availabilityState.getState()
+        return availabilities.map((a) => {
+            const localStart = this.timeSettingsService.convertUtcToLocal(
+                a.dayOfWeek,
+                a.startTime,
+            )
+            const localEnd = this.timeSettingsService.convertUtcToLocal(
+                a.dayOfWeek,
+                a.endTime,
+            )
+            return {
+                ...a,
+                dayOfWeek: localStart.dayOfWeek,
+                startTime: localStart.time,
+                endTime: localEnd.time,
+            }
+        })
+    }
+
     getDayName(day: number): string {
         const days = [
             'Sunday',
@@ -249,7 +273,32 @@ export class AvailabilityListComponent {
     }
 
     getGroupedAvailabilities() {
-        return this.availabilityState.getGroupedAvailabilities()
+        const localAvailabilities = this.getLocalAvailabilities()
+        const dayNames = [
+            'Sunday',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday',
+        ]
+
+        const grouped: any[] = []
+
+        for (let i = 0; i < 7; i++) {
+            const daySlots = localAvailabilities
+                .filter((a) => a.dayOfWeek === i)
+                .sort((a, b) => a.startTime.localeCompare(b.startTime))
+
+            grouped.push({
+                dayOfWeek: i,
+                dayName: dayNames[i],
+                slots: daySlots,
+            })
+        }
+
+        return grouped
     }
 
     getActiveDaysCount(availabilities: Availability[]): number {
@@ -263,6 +312,9 @@ export class AvailabilityListComponent {
         if (!time) return ''
 
         const [hour, minute] = time.split(':').map(Number)
+        if (this.timeSettingsService.use24HourFormat()) {
+            return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
+        }
         const period = hour >= 12 ? 'PM' : 'AM'
         const hour12 = hour % 12 || 12
         return `${hour12}:${minute.toString().padStart(2, '0')} ${period}`

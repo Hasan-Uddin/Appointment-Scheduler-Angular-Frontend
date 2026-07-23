@@ -35,7 +35,9 @@
                 <p-select
                     inputId="startTime"
                     formControlName="startTime"
-                    [options]="timeOptions"
+                    [options]="timeOptions()"
+                    optionLabel="label"
+                    optionValue="value"
                     placeholder="9:00 AM"
                     [filter]="true"
                     [disabled]="loading"
@@ -50,7 +52,9 @@
                 <p-select
                     inputId="endTime"
                     formControlName="endTime"
-                    [options]="timeOptions"
+                    [options]="timeOptions()"
+                    optionLabel="label"
+                    optionValue="value"
                     placeholder="5:00 PM"
                     [filter]="true"
                     [disabled]="loading"

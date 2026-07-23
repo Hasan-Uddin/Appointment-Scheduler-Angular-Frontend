@@ -1,15 +1,16 @@
-import { Component, inject, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
+import { Component, computed, inject, OnInit } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { ConfirmationService } from 'primeng/api'
 import { ButtonModule } from 'primeng/button'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
-import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog'
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
+import { SelectModule } from 'primeng/select'
 import { AlertService } from '../../../common-service/lib/alert.service'
+import { TimeSettingsService } from '../../../common-service/lib/time-settings.service'
+import { Availability } from '../../availability.model'
 import { AvailabilityFormService } from '../../availability-form.service'
 import { AvailabilityStateService } from '../../availability-state.service'
-import { Availability } from '../../availability.model'
-import { SelectModule } from 'primeng/select'
 
 @Component({
     selector: 'app-edit-availability-modal',
@@ -31,11 +32,16 @@ export class EditAvailabilityModalComponent implements OnInit {
     private config = inject(DynamicDialogConfig)
     private alertService = inject(AlertService)
     private confirmationService = inject(ConfirmationService)
+    private timeSettingsService = inject(TimeSettingsService)
 
     loading = false
     deleting = false
     availability: Availability
-    timeOptions = this.formService.getTimeOptions()
+    timeOptions = computed(() =>
+        this.formService.getTimeOptions(
+            this.timeSettingsService.use24HourFormat(),
+        ),
+    )
 
     constructor() {
         this.availability = this.config.data?.availability
@@ -58,22 +64,38 @@ export class EditAvailabilityModalComponent implements OnInit {
         }
         this.loading = true
         const formValue = this.formService.getValue()
+
+        // Convert to UTC before saving
+        const utcStart = this.timeSettingsService.convertLocalToUtc(
+            formValue.dayOfWeek,
+            formValue.startTime,
+        )
+        const utcEnd = this.timeSettingsService.convertLocalToUtc(
+            formValue.dayOfWeek,
+            formValue.endTime,
+        )
+
         const updateData = {
-            startTime: formValue.startTime,
-            endTime: formValue.endTime,
+            startTime: utcStart.time,
+            endTime: utcEnd.time,
+            dayOfWeek: utcStart.dayOfWeek,
         }
 
-        this.availabilityState.updateAvailability(this.availability.id, updateData).subscribe({
-            next: () => {
-                this.alertService.success('Availability updated successfully')
-                this.dialogRef.close(true)
-            },
-            error: (err) => {
-                console.error('Update failed:', err)
-                this.alertService.error('Failed to update availability')
-                this.loading = false
-            },
-        })
+        this.availabilityState
+            .updateAvailability(this.availability.id, updateData)
+            .subscribe({
+                next: () => {
+                    this.alertService.success(
+                        'Availability updated successfully',
+                    )
+                    this.dialogRef.close(true)
+                },
+                error: (err) => {
+                    console.error('Update failed:', err)
+                    this.alertService.error('Failed to update availability')
+                    this.loading = false
+                },
+            })
     }
 
     onDelete() {
@@ -96,7 +118,9 @@ export class EditAvailabilityModalComponent implements OnInit {
         this.availabilityState.toggleActive(this.availability.id).subscribe({
             next: () => {
                 this.availability.isActive = !this.availability.isActive
-                const action = this.availability.isActive ? 'activated' : 'deactivated'
+                const action = this.availability.isActive
+                    ? 'activated'
+                    : 'deactivated'
                 this.alertService.success(`Availability ${action}`)
             },
             error: (err) => {
@@ -109,24 +133,32 @@ export class EditAvailabilityModalComponent implements OnInit {
     private performDelete() {
         this.deleting = true
 
-        this.availabilityState.deleteAvailability(this.availability.id).subscribe({
-            next: () => {
-                this.alertService.success('Availability deleted successfully')
-                this.dialogRef.close({ action: 'deleted', id: this.availability.id })
-            },
-            error: (err) => {
-                console.error('Delete failed:', err)
-                this.alertService.error('Failed to delete availability')
-                this.deleting = false
-            },
-        })
+        this.availabilityState
+            .deleteAvailability(this.availability.id)
+            .subscribe({
+                next: () => {
+                    this.alertService.success(
+                        'Availability deleted successfully',
+                    )
+                    this.dialogRef.close({
+                        action: 'deleted',
+                        id: this.availability.id,
+                    })
+                },
+                error: (err) => {
+                    console.error('Delete failed:', err)
+                    this.alertService.error('Failed to delete availability')
+                    this.deleting = false
+                },
+            })
     }
 
     cancel() {
         if (this.formService.form.dirty) {
             this.confirmationService.confirm({
                 header: 'Unsaved Changes',
-                message: 'You have unsaved changes. Are you sure you want to close?',
+                message:
+                    'You have unsaved changes. Are you sure you want to close?',
                 icon: 'pi pi-exclamation-triangle',
                 acceptLabel: 'Discard',
                 rejectLabel: 'Keep Editing',
@@ -143,7 +175,15 @@ export class EditAvailabilityModalComponent implements OnInit {
     }
 
     getDayName(day: number): string {
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+        const days = [
+            'Sunday',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday',
+        ]
         return days[day]
     }
 

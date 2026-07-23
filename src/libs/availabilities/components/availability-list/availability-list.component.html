@@ -1,100 +1,88 @@
 @let state = availabilityState.selectAll() | async;
 @let loading = state?.loading ?? false;
-@let availabilities = state?.availabilities ?? [];
+@let availabilities = getLocalAvailabilities();
 @let selectedAvailabilities = state?.selectedAvailabilities ?? [];
 
 <p-confirmdialog />
 
 <div class="card rounded border border-gray-300 bg-white shadow-sm">
-    
+
     <!-- Header -->
     <div class="border-b border-gray-200 p-6">
         <div class="flex flex-col gap-4">
-            
+
             <!-- Title & Actions -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
                     <h2 class="text-xl font-semibold text-gray-900">Weekly Schedule</h2>
                     <p class="text-sm text-gray-600 mt-1">Set your available time slots for each day</p>
                 </div>
-                <p-button
-                    label="Add Time Slot"
-                    icon="pi pi-plus"
-                    (onClick)="openCreateDialog()" />
+                <p-button label="Add Time Slot" icon="pi pi-plus" (onClick)="openCreateDialog()" />
             </div>
 
             <!-- Stats -->
             @if (!loading && availabilities.length > 0) {
-                <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
-                    <div class="flex items-center gap-2">
-                        <span class="font-semibold text-gray-900">{{ availabilities.length }}</span>
-                        <span class="text-gray-600">Total Slots</span>
-                    </div>
-                    <div class="h-4 w-px bg-gray-300"></div>
-                    <div class="flex items-center gap-2">
-                        <span class="font-semibold text-green-600">
-                            {{ getActiveCount(availabilities) }}
-                        </span>
-                        <span class="text-gray-600">Active</span>
-                    </div>
-                    <div class="h-4 w-px bg-gray-300"></div>
-                    <div class="flex items-center gap-2">
-                        <span class="font-semibold text-blue-600">
-                            {{ getActiveDaysCount(availabilities) }}
-                        </span>
-                        <span class="text-gray-600">Days Available</span>
-                    </div>
+            <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+                <div class="flex items-center gap-2">
+                    <span class="font-semibold text-gray-900">{{ availabilities.length }}</span>
+                    <span class="text-gray-600">Total Slots</span>
                 </div>
+                <div class="h-4 w-px bg-gray-300"></div>
+                <div class="flex items-center gap-2">
+                    <span class="font-semibold text-green-600">
+                        {{ getActiveCount(availabilities) }}
+                    </span>
+                    <span class="text-gray-600">Active</span>
+                </div>
+                <div class="h-4 w-px bg-gray-300"></div>
+                <div class="flex items-center gap-2">
+                    <span class="font-semibold text-blue-600">
+                        {{ getActiveDaysCount(availabilities) }}
+                    </span>
+                    <span class="text-gray-600">Days Available</span>
+                </div>
+            </div>
             }
 
             <!-- Bulk Actions -->
             @if (selectedAvailabilities.length > 0) {
-                <div class="pt-4 border-t border-gray-200">
-                    <div class="flex flex-wrap items-center gap-3">
-                        <span class="text-sm font-medium text-gray-700">
-                            {{ selectedAvailabilities.length }} selected
-                        </span>
-                        <p-button
-                            severity="danger"
-                            label="Delete ({{ selectedAvailabilities.length }})"
-                            icon="pi pi-trash"
-                            [outlined]="true"
-                            size="small"
-                            (onClick)="confirmDeleteSelected(selectedAvailabilities)" />
-                        <p-button
-                            severity="secondary"
-                            label="Clear Selection"
-                            [text]="true"
-                            size="small"
-                            (onClick)="availabilityState.resetSelectedAvailabilities()" />
-                    </div>
+            <div class="pt-4 border-t border-gray-200">
+                <div class="flex flex-wrap items-center gap-3">
+                    <span class="text-sm font-medium text-gray-700">
+                        {{ selectedAvailabilities.length }} selected
+                    </span>
+                    <p-button severity="danger" label="Delete ({{ selectedAvailabilities.length }})" icon="pi pi-trash"
+                        [outlined]="true" size="small" (onClick)="confirmDeleteSelected(selectedAvailabilities)" />
+                    <p-button severity="secondary" label="Clear Selection" [text]="true" size="small"
+                        (onClick)="availabilityState.resetSelectedAvailabilities()" />
                 </div>
+            </div>
             }
         </div>
     </div>
 
     <!-- Weekly Calendar View -->
     <div class="p-6">
-        
+
         <!-- Loading -->
         @if (loading) {
-            <div class="space-y-4">
-                @for (i of [1,2,3,4,5]; track i) {
-                    <p-skeleton height="120px" styleClass="rounded-lg" />
-                }
-            </div>
+        <div class="space-y-4">
+            @for (i of [1,2,3,4,5]; track i) {
+            <p-skeleton height="120px" styleClass="rounded-lg" />
+            }
+        </div>
         }
 
         <!-- Grouped by Day -->
         @else if (availabilities.length > 0) {
-            <div class="space-y-4">
-                @for (dayGroup of getGroupedAvailabilities(); track dayGroup.dayOfWeek) {
-                    @if (dayGroup.slots.length > 0) {
-                        <div class="border border-gray-200 rounded-lg overflow-hidden hover:border-gray-300 transition-colors">
-                            
-                            <!-- Day Header -->
-                            <div class="flex items-center justify-between bg-gradient-to-r px-4 py-3 border-b border-gray-200"
-                                [ngClass]="{
+        <div class="space-y-4">
+            @for (dayGroup of getGroupedAvailabilities(); track dayGroup.dayOfWeek) {
+            @if (dayGroup.slots.length > 0) {
+            <div class="border border-gray-200 rounded-lg overflow-hidden hover:border-gray-300 transition-colors">
+
+                <!-- Day Header -->
+                <div class="flex items-center justify-between bg-gradient-to-r px-4 py-3 border-b border-gray-200"
+                    [ngClass]="{
                                     'from-blue-50 to-blue-100': dayGroup.dayOfWeek === 1,
                                     'from-purple-50 to-purple-100': dayGroup.dayOfWeek === 2,
                                     'from-green-50 to-green-100': dayGroup.dayOfWeek === 3,
@@ -103,11 +91,10 @@
                                     'from-indigo-50 to-indigo-100': dayGroup.dayOfWeek === 6,
                                     'from-yellow-50 to-yellow-100': dayGroup.dayOfWeek === 0
                                 }">
-                                
-                                <div class="flex items-center gap-3">
-                                    <!-- Day Icon -->
-                                    <div class="flex items-center justify-center w-12 h-12 rounded-lg shadow-sm"
-                                        [ngClass]="{
+
+                    <div class="flex items-center gap-3">
+                        <!-- Day Icon -->
+                        <div class="flex items-center justify-center w-12 h-12 rounded-lg shadow-sm" [ngClass]="{
                                             'bg-blue-500 text-white': dayGroup.dayOfWeek === 1,
                                             'bg-purple-500 text-white': dayGroup.dayOfWeek === 2,
                                             'bg-green-500 text-white': dayGroup.dayOfWeek === 3,
@@ -116,51 +103,42 @@
                                             'bg-indigo-500 text-white': dayGroup.dayOfWeek === 6,
                                             'bg-yellow-500 text-white': dayGroup.dayOfWeek === 0
                                         }">
-                                        <i class="pi pi-calendar text-xl"></i>
-                                    </div>
-                                    
-                                    <!-- Day Info -->
-                                    <div>
-                                        <h3 class="font-semibold text-gray-900 text-lg">{{ dayGroup.dayName }}</h3>
-                                        <p class="text-xs text-gray-600">
-                                            {{ dayGroup.slots.length }} time slot{{ dayGroup.slots.length !== 1 ? 's' : '' }}
-                                        </p>
-                                    </div>
-                                </div>
-                                
-                                <!-- Day Actions -->
-                                <p-button
-                                    icon="pi pi-trash"
-                                    severity="danger"
-                                    [text]="true"
-                                    [rounded]="true"
-                                    size="small"
-                                    pTooltip="Clear all slots for this day"
-                                    tooltipPosition="left"
-                                    (onClick)="confirmClearDay(dayGroup.dayOfWeek)" />
-                            </div>
+                            <i class="pi pi-calendar text-xl"></i>
+                        </div>
 
-                            <!-- Time Slots for this Day -->
-                            <div class="p-3 space-y-2 bg-white">
-                                @for (availability of dayGroup.slots; track availability.id) {
-                                    <div class="group flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all"
-                                        [ngClass]="{
+                        <!-- Day Info -->
+                        <div>
+                            <h3 class="font-semibold text-gray-900 text-lg">{{ dayGroup.dayName }}</h3>
+                            <p class="text-xs text-gray-600">
+                                {{ dayGroup.slots.length }} time slot{{ dayGroup.slots.length !== 1 ? 's' : '' }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Day Actions -->
+                    <p-button icon="pi pi-trash" severity="danger" [text]="true" [rounded]="true" size="small"
+                        pTooltip="Clear all slots for this day" tooltipPosition="left"
+                        (onClick)="confirmClearDay(dayGroup.dayOfWeek)" />
+                </div>
+
+                <!-- Time Slots for this Day -->
+                <div class="p-3 space-y-2 bg-white">
+                    @for (availability of dayGroup.slots; track availability.id) {
+                    <div class="group flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all"
+                        [ngClass]="{
                                             'bg-primary-50 border-primary-300 hover:bg-primary-100': isSelected(availability, selectedAvailabilities)
                                         }">
-                                        
-                                        <!-- Checkbox -->
-                                        <div class="flex-shrink-0">
-                                            <p-checkbox
-                                                [binary]="true"
-                                                [ngModel]="isSelected(availability, selectedAvailabilities)"
-                                                (ngModelChange)="onSelectionChange(availability, $event)" />
-                                        </div>
 
-                                        <!-- Time Range -->
-                                        <div class="flex-1 min-w-0">
-                                            <div class="flex items-center gap-2 text-gray-900 font-medium">
-                                                <i class="pi pi-clock"
-                                                    [ngClass]="{
+                        <!-- Checkbox -->
+                        <div class="flex-shrink-0">
+                            <p-checkbox [binary]="true" [ngModel]="isSelected(availability, selectedAvailabilities)"
+                                (ngModelChange)="onSelectionChange(availability, $event)" />
+                        </div>
+
+                        <!-- Time Range -->
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 text-gray-900 font-medium">
+                                <i class="pi pi-clock" [ngClass]="{
                                                         'text-blue-500': dayGroup.dayOfWeek === 1,
                                                         'text-purple-500': dayGroup.dayOfWeek === 2,
                                                         'text-green-500': dayGroup.dayOfWeek === 3,
@@ -169,81 +147,63 @@
                                                         'text-indigo-500': dayGroup.dayOfWeek === 6,
                                                         'text-yellow-600': dayGroup.dayOfWeek === 0
                                                     }"></i>
-                                                <span>{{ formatTime(availability.startTime) }} - {{ formatTime(availability.endTime) }}</span>
-                                            </div>
-                                            <div class="flex items-center gap-3 mt-1 text-xs text-gray-500">
-                                                <span class="flex items-center gap-1">
-                                                    <i class="pi pi-stopwatch"></i>
-                                                    {{ getDuration(availability) }}
-                                                </span>
-                                                <span>•</span>
-                                                <span>Added {{ availability.createdAt | date: 'MMM d, yyyy' }}</span>
-                                            </div>
-                                        </div>
-                                        <!-- Status -->
-                                        <div class="flex-shrink-0">
-                                            <p-tag
-                                                [value]="availability.isActive ? 'Active' : 'Inactive'"
-                                                [severity]="availability.isActive ? 'success' : 'secondary'"
-                                                [rounded]="true"
-                                                styleClass="text-xs" />
-                                        </div>
-
-                                        <!-- Actions -->
-                                        <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <p-button
-                                                icon="pi pi-pencil"
-                                                [rounded]="true"
-                                                [text]="true"
-                                                size="small"
-                                                severity="info"
-                                                pTooltip="Edit"
-                                                tooltipPosition="top"
-                                                (onClick)="openEditDialog(availability)" />
-                                            <p-button
-                                                icon="pi pi-trash"
-                                                [rounded]="true"
-                                                [text]="true"
-                                                size="small"
-                                                severity="danger"
-                                                pTooltip="Delete"
-                                                tooltipPosition="top"
-                                                (onClick)="confirmDelete(availability)" />
-                                        </div>
-                                    </div>
-                                }
+                                <span>{{ formatTime(availability.startTime) }} - {{ formatTime(availability.endTime)
+                                    }}</span>
+                            </div>
+                            <div class="flex items-center gap-3 mt-1 text-xs text-gray-500">
+                                <span class="flex items-center gap-1">
+                                    <i class="pi pi-stopwatch"></i>
+                                    {{ getDuration(availability) }}
+                                </span>
+                                <span>•</span>
+                                <span>Added {{ availability.createdAt | appTime: 'date' }}</span>
                             </div>
                         </div>
+                        <!-- Status -->
+                        <div class="flex-shrink-0">
+                            <p-tag [value]="availability.isActive ? 'Active' : 'Inactive'"
+                                [severity]="availability.isActive ? 'success' : 'secondary'" [rounded]="true"
+                                styleClass="text-xs" />
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" size="small" severity="info"
+                                pTooltip="Edit" tooltipPosition="top" (onClick)="openEditDialog(availability)" />
+                            <p-button icon="pi pi-trash" [rounded]="true" [text]="true" size="small" severity="danger"
+                                pTooltip="Delete" tooltipPosition="top" (onClick)="confirmDelete(availability)" />
+                        </div>
+                    </div>
                     }
-                }
+                </div>
             </div>
+            }
+            }
+        </div>
         }
 
         <!-- Empty State -->
         @else {
-            <div class="flex flex-col items-center justify-center gap-4 py-20 text-gray-400">
-                <i class="pi pi-calendar-times text-6xl"></i>
-                <div class="text-center">
-                    <p class="text-lg font-medium text-gray-600">No availability set</p>
-                    <p class="text-sm mt-1 text-gray-500">Add your first time slot to start accepting bookings</p>
-                    
-                    <!-- Quick Setup Tips -->
-                    <div class="mt-6 max-w-md mx-auto text-left bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <p class="text-sm font-medium text-blue-900 mb-2">💡 Quick Setup Tips:</p>
-                        <ul class="text-xs text-blue-700 space-y-1 list-disc list-inside">
-                            <li>Add multiple time slots per day for flexibility</li>
-                            <li>Set different hours for different days</li>
-                            <li>You can deactivate slots temporarily without deleting</li>
-                        </ul>
-                    </div>
+        <div class="flex flex-col items-center justify-center gap-4 py-20 text-gray-400">
+            <i class="pi pi-calendar-times text-6xl"></i>
+            <div class="text-center">
+                <p class="text-lg font-medium text-gray-600">No availability set</p>
+                <p class="text-sm mt-1 text-gray-500">Add your first time slot to start accepting bookings</p>
 
-                    <p-button
-                        label="Add Your First Time Slot"
-                        icon="pi pi-plus"
-                        class="mt-4"
-                        (onClick)="openCreateDialog()" />
+                <!-- Quick Setup Tips -->
+                <div class="mt-6 max-w-md mx-auto text-left bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <p class="text-sm font-medium text-blue-900 mb-2">💡 Quick Setup Tips:</p>
+                    <ul class="text-xs text-blue-700 space-y-1 list-disc list-inside">
+                        <li>Add multiple time slots per day for flexibility</li>
+                        <li>Set different hours for different days</li>
+                        <li>You can deactivate slots temporarily without deleting</li>
+                    </ul>
                 </div>
+
+                <p-button label="Add Your First Time Slot" icon="pi pi-plus" class="mt-4"
+                    (onClick)="openCreateDialog()" />
             </div>
+        </div>
         }
     </div>
 

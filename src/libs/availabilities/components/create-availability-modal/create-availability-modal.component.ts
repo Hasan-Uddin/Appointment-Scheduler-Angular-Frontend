@@ -1,16 +1,16 @@
+import { CommonModule } from '@angular/common'
 import {
     ChangeDetectionStrategy,
-    ChangeDetectorRef,
     Component,
+    computed,
     inject,
-    OnInit,
 } from '@angular/core'
-import { CommonModule } from '@angular/common'
 import { ReactiveFormsModule } from '@angular/forms'
 import { ButtonModule } from 'primeng/button'
-import { SelectModule } from 'primeng/select'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
+import { SelectModule } from 'primeng/select'
 import { AlertService } from '../../../common-service/lib/alert.service'
+import { TimeSettingsService } from '../../../common-service/lib/time-settings.service'
 import { AvailabilityApiService } from '../../availability-api.service'
 import { AvailabilityFormService } from '../../availability-form.service'
 import { AvailabilityStateService } from '../../availability-state.service'
@@ -30,11 +30,18 @@ export class CreateAvailabilityModalComponent {
     private dialogRef = inject(DynamicDialogRef)
     private alertService = inject(AlertService)
     private config = inject(DynamicDialogConfig)
+    private timeSettingsService = inject(TimeSettingsService)
 
     dayOfWeekControl = this.formService.form.get('dayOfWeek')
     loading = false
     dayOptions = this.formService.getDayOptions()
-    timeOptions = this.formService.getTimeOptions()
+
+    // Compute time options dynamically based on 24-hour setting
+    timeOptions = computed(() =>
+        this.formService.getTimeOptions(
+            this.timeSettingsService.use24HourFormat(),
+        ),
+    )
 
     constructor() {
         const userId = this.config.data?.userId
@@ -59,11 +66,21 @@ export class CreateAvailabilityModalComponent {
         const state = this.availabilityState.getState()
         const formValue = this.formService.getValue()
 
+        // Convert to UTC before saving
+        const utcStart = this.timeSettingsService.convertLocalToUtc(
+            formValue.dayOfWeek,
+            formValue.startTime,
+        )
+        const utcEnd = this.timeSettingsService.convertLocalToUtc(
+            formValue.dayOfWeek,
+            formValue.endTime,
+        )
+
         const availabilityDto = {
             userId: state.userId,
-            dayOfWeek: formValue.dayOfWeek,
-            startTime: formValue.startTime,
-            endTime: formValue.endTime,
+            dayOfWeek: utcStart.dayOfWeek,
+            startTime: utcStart.time,
+            endTime: utcEnd.time,
         }
 
         this.apiService.createAvailability(availabilityDto).subscribe({

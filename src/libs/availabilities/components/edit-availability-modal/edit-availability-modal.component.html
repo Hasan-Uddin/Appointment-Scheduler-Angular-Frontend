@@ -4,7 +4,7 @@
     
     <!-- Day of Week (Read-only) -->
     <div class="flex flex-col gap-2">
-        <label class="font-medium text-sm text-gray-700">Day of Week</label>
+        <span class="font-medium text-sm text-gray-700">Day of Week</span>
         <div class="flex items-center gap-3 p-3 bg-gray-50 border border-gray-200 rounded-lg">
             <div class="flex items-center justify-center w-10 h-10 rounded-lg"
                 [ngClass]="{
@@ -37,7 +37,9 @@
             <p-select
                 inputId="startTime"
                 formControlName="startTime"
-                [options]="timeOptions"
+                [options]="timeOptions()"
+                optionLabel="label"
+                optionValue="value"
                 placeholder="9:00 AM"
                 [filter]="true"
                 [disabled]="loading || deleting"
@@ -52,7 +54,9 @@
             <p-select
                 inputId="endTime"
                 formControlName="endTime"
-                [options]="timeOptions"
+                [options]="timeOptions()"
+                optionLabel="label"
+                optionValue="value"
                 placeholder="5:00 PM"
                 [filter]="true"
                 [disabled]="loading || deleting"
