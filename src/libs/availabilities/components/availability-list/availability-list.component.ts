@@ -120,8 +120,9 @@ export class AvailabilityListComponent {
             },
         })
 
-        ref?.onClose.subscribe((created: boolean) => {
-            if (created) {
+        ref?.onClose.subscribe((createdAvailability: Availability) => {
+            if (createdAvailability) {
+                this.availabilityState.pushAvailability(createdAvailability)
                 this.alertService.success('Availability added successfully')
             }
         })
