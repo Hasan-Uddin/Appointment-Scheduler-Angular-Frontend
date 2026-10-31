@@ -1,16 +1,16 @@
-import { Component, inject, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
+import { Component, inject, OnInit } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { ButtonModule } from 'primeng/button'
-import { InputTextModule } from 'primeng/inputtext'
-import { InputNumberModule } from 'primeng/inputnumber'
 import { ColorPickerModule } from 'primeng/colorpicker'
 import { DynamicDialogRef } from 'primeng/dynamicdialog'
-import { EventTypeFormService } from '../../event-type-form.service'
-import { EventTypeApiService } from '../../event-type-api.service'
-import { AlertService } from '../../../common-service/lib/alert.service'
+import { InputNumberModule } from 'primeng/inputnumber'
+import { InputTextModule } from 'primeng/inputtext'
 import { TextareaModule } from 'primeng/textarea'
 import { ContextUserStorageService } from '../../../auth/service/contextUser-storage.service'
+import { AlertService } from '../../../common-service/lib/alert.service'
+import { EventTypeApiService } from '../../event-type-api.service'
+import { EventTypeFormService } from '../../event-type-form.service'
 
 @Component({
     selector: 'app-create-event-type-modal',
@@ -59,8 +59,8 @@ export class CreateEventTypeModalComponent implements OnInit {
         this.loading = true
 
         this.apiService.createEventType(this.formService.getValue()).subscribe({
-            next: () => {
-                this.dialogRef.close(true)
+            next: (res) => {
+                this.dialogRef.close(res)
             },
             error: (err) => {
                 console.error('Create failed:', err)
@@ -69,7 +69,7 @@ export class CreateEventTypeModalComponent implements OnInit {
             },
         })
     }
-    
+
     cancel() {
         this.dialogRef.close(false)
     }
