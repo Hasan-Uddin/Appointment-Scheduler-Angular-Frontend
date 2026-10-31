@@ -13,24 +13,24 @@ import { AlertService } from '../../../common-service/lib/alert.service'
 import { TimeSettingsService } from '../../../common-service/lib/time-settings.service'
 import { AvailabilityApiService } from '../../availability-api.service'
 import { AvailabilityFormService } from '../../availability-form.service'
-import { AvailabilityStateService } from '../../availability-state.service'
 
 @Component({
     selector: 'app-create-availability-modal',
     standalone: true,
     imports: [CommonModule, ReactiveFormsModule, ButtonModule, SelectModule],
     templateUrl: './create-availability-modal.component.html',
-    providers: [AvailabilityFormService, AvailabilityStateService],
+    providers: [AvailabilityFormService],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateAvailabilityModalComponent {
     protected formService = inject(AvailabilityFormService)
     private apiService = inject(AvailabilityApiService)
-    private availabilityState = inject(AvailabilityStateService)
     private dialogRef = inject(DynamicDialogRef)
     private alertService = inject(AlertService)
     private config = inject(DynamicDialogConfig)
     private timeSettingsService = inject(TimeSettingsService)
+
+    private userId: string = this.config.data?.userId ?? ''
 
     dayOfWeekControl = this.formService.form.get('dayOfWeek')
     loading = false
@@ -43,18 +43,6 @@ export class CreateAvailabilityModalComponent {
         ),
     )
 
-    constructor() {
-        const userId = this.config.data?.userId
-        if (userId) {
-            this.availabilityState.setState({ userId })
-        }
-    }
-    // ngOnInit() {
-    //     // Pre-select current day
-    //     const today = new Date().getDay()
-    //     this.formService.controls('dayOfWeek')?.setValue(today)
-    // }
-
     onSubmit() {
         if (!this.formService.isValid()) {
             this.formService.markAllAsTouched()
@@ -63,7 +51,6 @@ export class CreateAvailabilityModalComponent {
 
         this.loading = true
 
-        const state = this.availabilityState.getState()
         const formValue = this.formService.getValue()
 
         // Convert to UTC before saving
@@ -77,7 +64,7 @@ export class CreateAvailabilityModalComponent {
         )
 
         const availabilityDto = {
-            userId: state.userId,
+            userId: this.userId,
             dayOfWeek: utcStart.dayOfWeek,
             startTime: utcStart.time,
             endTime: utcEnd.time,
@@ -85,8 +72,7 @@ export class CreateAvailabilityModalComponent {
 
         this.apiService.createAvailability(availabilityDto).subscribe({
             next: (created) => {
-                this.availabilityState.pushAvailability(created)
-                this.dialogRef.close(true)
+                this.dialogRef.close(created)
             },
             error: (err) => {
                 console.error('Create failed:', err)
