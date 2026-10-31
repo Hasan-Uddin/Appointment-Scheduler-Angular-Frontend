@@ -167,8 +167,12 @@ export class AvailabilityStateService extends SimpleStore<AvailabilityState> {
     }
 
     pushAvailability(availability: Availability) {
+        const { availabilities } = this.getState()
+        if (availabilities.some((a) => a.id === availability.id)) {
+            return
+        }
         this.setState({
-            availabilities: [availability, ...this.getState().availabilities],
+            availabilities: [availability, ...availabilities],
         })
     }
 

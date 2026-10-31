@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core'
 import { CommonModule } from '@angular/common'
+import { Component, inject } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { ConfirmationService } from 'primeng/api'
 import { ButtonModule } from 'primeng/button'
@@ -8,16 +8,16 @@ import { DialogService } from 'primeng/dynamicdialog'
 import { IconFieldModule } from 'primeng/iconfield'
 import { InputIconModule } from 'primeng/inputicon'
 import { InputTextModule } from 'primeng/inputtext'
-import { SkeletonModule } from 'primeng/skeleton'
 import { SelectButtonModule } from 'primeng/selectbutton'
+import { SkeletonModule } from 'primeng/skeleton'
 import { forkJoin } from 'rxjs'
+import { ContextUserStorageService } from '../../../auth/service/contextUser-storage.service'
 import { AlertService } from '../../../common-service/lib/alert.service'
 import { EventType } from '../../event-type.model'
 import { EventTypeStateService } from '../../event-type-state.service'
 import { CreateEventTypeModalComponent } from '../create-event-type-modal/create-event-type-modal.component'
 import { EditEventTypeModalComponent } from '../edit-event-type-modal/edit-event-type-modal.component'
 import { EventTypeTileComponent } from '../event-type-tile/event-type-tile.component'
-import { ContextUserStorageService } from '../../../auth/service/contextUser-storage.service'
 
 interface FilterOption {
     label: string
@@ -95,8 +95,9 @@ export class EventTypeListComponent {
             baseZIndex: 10000,
         })
 
-        ref?.onClose.subscribe((created: boolean) => {
-            if (created) {
+        ref?.onClose.subscribe((createdEventType: EventType) => {
+            if (createdEventType) {
+                this.eventTypeState.pushEventType(createdEventType)
                 this.alertService.success('Event type created successfully')
             }
         })
@@ -194,7 +195,7 @@ export class EventTypeListComponent {
     }
 
     copyBookingLink(eventType: EventType) {
-        const link = `${window.location.origin}/book/${ this.username }/${eventType.slug}`
+        const link = `${window.location.origin}/book/${this.username}/${eventType.slug}`
         navigator.clipboard.writeText(link).then(() => {
             this.alertService.success('Booking link copied to clipboard')
         })

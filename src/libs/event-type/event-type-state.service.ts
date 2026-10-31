@@ -83,7 +83,9 @@ export class EventTypeStateService extends SimpleStore<EventTypeState> {
             catchError((error) => {
                 console.error('Error deleting event type:', error)
                 this.setState({ error: true })
-                return throwError(() => new Error('Failed to delete event type'))
+                return throwError(
+                    () => new Error('Failed to delete event type'),
+                )
             }),
             finalize(() => this.setState({ loading: false })),
         )
@@ -100,7 +102,9 @@ export class EventTypeStateService extends SimpleStore<EventTypeState> {
             catchError((error) => {
                 console.error('Error updating event type:', error)
                 this.setState({ error: true })
-                return throwError(() => new Error('Failed to update event type'))
+                return throwError(
+                    () => new Error('Failed to update event type'),
+                )
             }),
             finalize(() => this.setState({ loading: false })),
         )
@@ -133,7 +137,9 @@ export class EventTypeStateService extends SimpleStore<EventTypeState> {
             catchError((error) => {
                 console.error('Error duplicating event type:', error)
                 this.setState({ error: true })
-                return throwError(() => new Error('Failed to duplicate event type'))
+                return throwError(
+                    () => new Error('Failed to duplicate event type'),
+                )
             }),
             finalize(() => this.setState({ loading: false })),
         )
@@ -147,8 +153,12 @@ export class EventTypeStateService extends SimpleStore<EventTypeState> {
     }
 
     pushEventType(eventType: EventType) {
+        const { eventTypes } = this.getState()
+        if (eventTypes.some((e) => e.id === eventType.id)) {
+            return
+        }
         this.setState({
-            eventTypes: [eventType, ...this.getState().eventTypes],
+            eventTypes: [eventType, ...eventTypes],
         })
     }
 
